@@ -1,0 +1,11 @@
+{
+  "name": "yalaNotlob",
+  "version": "1.0.0",
+  "description": "Food Delivery Ordering Social Network",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "mongoose": "^4.9.2",
+    "socket.io": "^1.7.3"
+  }
+}

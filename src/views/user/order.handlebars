@@ -1,0 +1,42 @@
+{{> user/nav}}
+<table>
+	<thead>
+		<tr>
+			<th>Person</th>
+			<th>Item</th>
+			<th>Amount</th>
+			<th>Price</th>
+			<th>Comment</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>\{{order.owner}}</td>
+			<td>\{{order.item}}</td>
+			<td>\{{order.amount}}</td>
+			<td>\{{order.price}}</td>
+			<td>\{{order.comment}}</td>
+			<td><a href="#">Delete</a></td>
+		</tr>
+	</tbody>
+</table>
+<form method="post">
+	<div>
+		<label>Item</label>
+		<input type="text" name="order-item">
+	</div>
+	<div>
+		<label>Amount</label>
+		<input type="number" min="0" name="order-amount">
+	</div>
+	<div>
+		<label>Price</label>
+		<input type="number" min="0" step=".5" name="order-price">
+	</div>
+	<div>
+		<label>Comment</label>
+		<input type="text" name="order-comment">
+	</div>
+	<input type="submit" value="Add">
+</form>

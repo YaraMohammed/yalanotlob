@@ -3,6 +3,7 @@ var express = require('express');
 var http = require('http');
 var mongoose = require('mongoose');
 var socketIO = require('socket.io');
+var handlebars = require('express-handlebars');
 var config = require('./config');
 
 /* VARs */
@@ -14,6 +15,9 @@ var sio = socketIO(server);
 mongoose.connect('mongodb://'+config.database.hostname+':'+config.database.port+'/'+config.database.name);
 
 require('./routes/sio').serve(sio);
+
+app.engine('handlebars', handlebars({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/index'));

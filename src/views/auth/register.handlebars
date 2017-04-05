@@ -1,0 +1,24 @@
+{{> guest/nav}}
+<form method="post" enctype="multipart/form-data">
+	<div>
+		<label>Name</label>
+		<input type="text" name="user-name" placeholder="Name">
+	</div>
+	<div>
+		<label>Email</label>
+		<input type="text" name="user-email" placeholder="Email">
+	</div>
+	<div>
+		<label>Password</label>
+		<input type="password" name="user-pass" placeholder="Password">
+	</div>
+	<div>
+		<label>Confirm Password</label>
+		<input type="password" name="user-pass-conf" placeholder="Confirm Password">
+	</div>
+	<div>
+		<label>Profile Picture</label>
+		<input type="file" name="user-img">
+	</div>
+	<button type="submit">Register</button>
+</form>

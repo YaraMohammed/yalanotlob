@@ -1,0 +1,29 @@
+{{> user/nav}}
+<h1>Orders</h1>
+<a href="/order-new">Start New Order</a>
+<table>
+	<thead>
+		<tr>
+			<th>Order</th>
+			<th>Restaurant</th>
+			<th>Invited</th>
+			<th>Joined</th>
+			<th>Status</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>\{{order.type}}</td>
+			<td>\{{order.restaurant}}</td>
+			<td>\{{order.invited}}</td>
+			<td>\{{order.joined}}</td>
+			<td>\{{order.status}}</td>
+			<td>
+				<a href="/order">View</a>
+				<a href="#">Finish</a>
+				<a href="#">Cancel</a>
+			</td>
+		</tr>
+	</tbody>
+</table>

@@ -9,13 +9,7 @@ var schema = new mongoose.Schema({
 		enum: ['Breakfast', 'Lunch','Dinner']
 	},
 	restaurant: String,
-	requests: [{
-		user: String,
-		status: {
-			type: String,
-			enum: ['waiting', 'accepted']
-		}
-	}],
+	requests: Object,
 	menuImageUrl: String,
 	orders: [{
 		owner: String,

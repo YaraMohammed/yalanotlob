@@ -1,6 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var userModel = require('../models/users');
+var userModel = require('../models/user');
 
 module.exports = {
 	// register a new user

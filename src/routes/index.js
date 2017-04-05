@@ -1,5 +1,8 @@
 /* LIBs */
 var express = require('express');
+var bodyParser  = require('body-parser');
+var passport = require('passport');
+var aoth = require('../controllers/auth');
 
 /* VARs */
 var router = express.Router();
@@ -9,6 +12,16 @@ router.use((req, res, next) => {
 	res.locals.title = 'Yala Notlob';
 	next();
 });
+
+// allow remote controlle 
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+// use body parser so we can get info from POST and/or URL parameters
+router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
 	res.render('index');
@@ -21,6 +34,18 @@ get((req, res) => {
 post(() => {
 	throw 'Not yet implemented';
 });
+
+// route for facebook authentication and login
+router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email' }
+));
+
+// handle the callback after facebook has authenticated the user
+router.get('/login/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect : '/home',
+    failureRedirect : '/'
+  })
+);
 
 router.route('/register').
 get((req, res) => {

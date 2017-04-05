@@ -7,6 +7,9 @@
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "mongoose": "^4.9.2",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "passport": "^0.3.2",
+    "body-parser":  "^1.15.0",
+    "passport-facebook": "*"
   }
 }

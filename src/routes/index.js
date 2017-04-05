@@ -2,7 +2,7 @@
 var express = require('express');
 var bodyParser  = require('body-parser');
 var passport = require('passport');
-var aoth = require('../controllers/auth');
+var auth = require('../controllers/auth');
 var user = require('../controllers/user');
 
 /* VARs */
@@ -16,9 +16,9 @@ router.use((req, res, next) => {
 
 // allow remote controlle
 router.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
 });
 
 // use body parser so we can get info from POST and/or URL parameters
@@ -49,10 +49,10 @@ router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email
 
 // handle the callback after facebook has authenticated the user
 router.get('/login/facebook/callback',
-  passport.authenticate('facebook', {
-    successRedirect : '/home',
-    failureRedirect : '/'
-  })
+	passport.authenticate('facebook', {
+		successRedirect : '/home',
+		failureRedirect : '/'
+	})
 );
 
 router.route('/register').

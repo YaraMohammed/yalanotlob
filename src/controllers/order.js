@@ -1,28 +1,26 @@
-var express = require('express');
-var mongoose = require('mongoose');
 var Order = require('../models/order');
 
 module.exports = {
 	// create new order functions
 	create: function(userEmail, type, restaurant, friends, menuImageUrl) {
 		var reqs;
-		for (friend of friends) {
+		for (var friend of friends) {
 			reqs[friend] = 'waiting';
 		}
 		var order = new Order({
-				owner: userEmail,
-				type: type,
-				restaurant: restaurant,
-				requests: reqs,
-				menuImageUrl: menuImageUrl,
-				orders: [],
-				status: 'waiting'
+			owner: userEmail,
+			type: type,
+			restaurant: restaurant,
+			requests: reqs,
+			menuImageUrl: menuImageUrl,
+			orders: [],
+			status: 'waiting'
 		});
-    order.save(function(err,data){
-      if(!err){
+		order.save(function(err,data){
+			if(!err){
 				console.log(data);
-      }
-    });
+			}
+		});
 	},
 
 	// accept order invitation
@@ -32,7 +30,7 @@ module.exports = {
 		}, (err, order) => {
 			if (order.requests[userEmail] == undefined)
 			{
-				throw Exception();
+				throw 'Error';
 			}
 			else
 			{
@@ -44,14 +42,14 @@ module.exports = {
 	// add an item to order
 	addItem: function(userEmail, orderID, item, amount, price, comment) {
 
-		var item ={
+		var itoma ={
 			owner: userEmail,
-		  item: item,
-	 		amount: amount,
-	 		price: price,
+			item: item,
+			amount: amount,
+			price: price,
 			comment: comment
 		};
-		Order.findOneAndUpdate({'_id': orderID},{$set:{$push:{'orders':item}}},function (err,data) {
+		Order.findOneAndUpdate({'_id': orderID},{$set:{$push:{'orders':itoma}}},function (err,data) {
 			if(!err){
 				console.log(data);
 			}else{

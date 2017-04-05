@@ -1,6 +1,5 @@
-var express = require('express');
-var mongoose = require('mongoose');
 var userModel = require('../models/user');
+var jwt = require('jsonwebtoken');
 
 module.exports = {
 
@@ -9,19 +8,33 @@ module.exports = {
 		var newUser = new userModel({
 			_id: userEmail,
 			name: userName,
+			fb_access_token: '',
 			password: userPassword,
-			imageUrl: imageUrl
+			friends: [],
+			orderRequests: [],
+			imageUrl: imageUrl,
+			groups: {}
 		});
 		newUser.save(function(err,data){
 			if(!err){
 				console.log(data);
+			} else {
+				console.log(err);
 			}
 		});
 	},
 
 	// user login
-	token: function(userEmail, password) {
-		throw 'Not yet implemented';
+	token: function(userEmail, password,cb) {
+		userModel.findOne({'_id': userEmail , 'password': password},function (err, data) {
+			if(data != null){
+				var token = jwt.sign({ '_id': userEmail }, 'secret', { algorithm: 'HS256'});
+				cb(token);
+			}
+			else {
+				cb(null);
+			}
+		});
 	},
 
 	// to know the token owner

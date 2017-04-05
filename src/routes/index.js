@@ -3,6 +3,7 @@ var express = require('express');
 var bodyParser  = require('body-parser');
 var passport = require('passport');
 var auth = require('../controllers/auth');
+var user = require('../controllers/user');
 
 /* VARs */
 var router = express.Router();
@@ -13,11 +14,11 @@ router.use((req, res, next) => {
 	next();
 });
 
-// allow remote controlle 
+// allow remote controlle
 router.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	next();
 });
 
 // use body parser so we can get info from POST and/or URL parameters
@@ -31,8 +32,16 @@ router.route('/login').
 get((req, res) => {
 	res.render('auth/login');
 }).
-post(() => {
-	throw 'Not yet implemented';
+post((req, res) => {
+	user.token(req.body['user-email'], req.body['user-pass'], function(token) {
+		console.log(token);
+		if (token != null) {
+			res.cookie('token', token);
+			res.redirect('/home')
+		} else {
+			console.log('Authentication failed for '+req.body['user-email']);
+		}
+	});
 });
 
 // route for facebook authentication and login
@@ -41,18 +50,25 @@ router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email
 
 // handle the callback after facebook has authenticated the user
 router.get('/login/facebook/callback',
-  passport.authenticate('facebook', {
-    successRedirect : '/home',
-    failureRedirect : '/'
-  })
+	passport.authenticate('facebook', {
+		successRedirect : '/home',
+		failureRedirect : '/'
+	})
 );
 
 router.route('/register').
 get((req, res) => {
 	res.render('auth/register');
 }).
-post(() => {
-	throw 'Not yet implemented';
+post((req, res) => {
+	console.log(req.body);
+	user.register(
+		req.body['user-name'],
+		req.body['user-email'],
+		req.body['user-pass'],
+		''
+	);
+	res.redirect('/login');
 });
 
 router.route('/forgot-pass').

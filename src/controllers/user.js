@@ -31,10 +31,10 @@ module.exports = {
 		userModel.findById(friendEmail, function(err, data) {
 		  if (err) throw err;
 			// check if the friend already added
-			userModel.find(({ _id: userEmail, friends: friendEmail}, function(err, data) {
-			  if (err){
+			userModel.findOne(({ _id: userEmail, friends: friendEmail}, function(err, data) {
+			  if (data == null){
 						//  add friend in user friends list
-						userModel.findOneAndUpdate({ _id: userEmail }, { $push: { friends: friendEmail } }, function(err, data) {
+						userModel.findOneAndUpdate({ _id: userEmail },{$set: { $push: { friends: friendEmail }} }, function(err, data) {
 			  			if (err) throw err;
 			  			console.log(data);
 						});
@@ -53,11 +53,33 @@ module.exports = {
 	},
 	// create new group
 	createGroup: function(userEmail, groupName) {
-		throw 'Not yet implemented';
+		var groupCriteria =  "groups."+groupName;
+		userModel.findOne(({_id: userEmail,groupCriteria:{$exists:true}}, function(err, data) {
+			if (data == null){
+					//  add friend in user friends list
+					userModel.update({_id: userEmail},{$set:{groups:{groupName:[]}}}, function(err, data) {
+						if (err) throw err;
+						console.log(data);
+					});
+				}else{
+					console.log("Group Already Exists");
+				}
+			});
 	},
 	// delete a group
 	deleteGroup: function(userEmail, groupName) {
-		throw 'Not yet implemented';
+		var groupCriteria =  "groups."+groupName;
+		userModel.findOne(({_id: userEmail,groupCriteria:{$exists:true}}, function(err, data) {
+			if (data != null){
+					//  add friend in user friends list
+					userModel.update({_id: userEmail},{$unset:{groupCriteria:[]}}, function(err, data) {
+						if (err) throw err;
+						console.log(data);
+					});
+				}else{
+					console.log(err);
+				}
+			});
 	},
 	// add new member to group
 	addToGroup: function(userEmail, groupName, friendEmail) {

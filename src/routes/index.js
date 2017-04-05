@@ -2,7 +2,7 @@
 var express = require('express');
 var bodyParser  = require('body-parser');
 var passport = require('passport');
-var aoth = require('../controllers/auth');
+var auth = require('../controllers/auth');
 
 /* VARs */
 var router = express.Router();

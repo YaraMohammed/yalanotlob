@@ -1,0 +1,24 @@
+{{> user/nav}}
+<form method="post" enctype="multipart/form-data">
+	<div>
+		<label>Order for</label>
+		<select name="order-type">
+			<option value="Breakfast">Breakfast</option>
+			<option value="Lunch">Lunch</option>
+			<option value="Dinner">Dinner</option>
+		</select>
+	</div>
+	<div>
+		<label>From</label>
+		<input type="text" name="order-restaurant">
+	</div>
+	<div>
+		<label>Friends</label>
+		<input type="text" id="order-friend">
+	</div>
+	<div>
+		<label>Menu Image</label>
+		<input type="file" name="order-menu-img">
+	</div>
+	<input type="submit" value="Submit">
+</form>

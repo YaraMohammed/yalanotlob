@@ -1,0 +1,22 @@
+{{> user/nav}}
+<div>
+    <h2>My Groups</h2>
+    <div>
+        \{{groups}}
+		<a href="#">Add Friend</a>
+		<a href="#">Delete</a>
+    </div>
+</div>
+<div>
+    <h2>\{{group.name}}</h2>
+    <div>
+		<form method="post">
+			<div>
+				<label>Your Friend Name</label>
+				<input type="text" name="group-add-friend">
+				<input type="submit" value="Add">
+			</div>
+		</form>
+        \{{group.friends}}
+    </div>
+</div>

@@ -1,8 +1,8 @@
-var sio = null
+var sio = null;
 
 module.exports = {
 	serve: function(sioNew) {
-		sio = sioNew
+		sio = sioNew;
 
 		sio.on('connection', (sock) => {
 			throw 'Not yet implemented';

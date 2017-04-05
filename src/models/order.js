@@ -27,9 +27,12 @@ var schema = new mongoose.Schema({
 	status: {
 		type: String,
 		enum: ['waiting', 'finished']
-}, timestamps: {
-	createdAt: 'createdAt',
-	updatedAt: 'updatedAt'
+	}
+}, {
+	timestamps: {
+		createdAt: 'createdAt',
+		updatedAt: 'updatedAt'
+	}
 });
 
 /* EXPORTING */

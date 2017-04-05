@@ -24,7 +24,7 @@ passport.use('facebook', new FacebookStrategy({
  
         // if there is an error, stop everything and return that
         // ie an error connecting to the database
-        // if (!err)
+        // if (err)
         //   return done(err);
  
           // if the user is found, then log them in

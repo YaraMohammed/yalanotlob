@@ -15,7 +15,8 @@ passport.use('facebook', new FacebookStrategy({
   // facebook will send back the tokens and profile
   function(access_token, refresh_token, profile, done) {
 
-  	console.log(profile.emails[0].value)
+  	console.log(profile.name.givenName)
+    
     // asynchronous
     process.nextTick(function() {
 
@@ -24,12 +25,13 @@ passport.use('facebook', new FacebookStrategy({
 
         // if there is an error, stop everything and return that
         // ie an error connecting to the database
-        // if (err)
-        //   return done(err);
+        if (err)
+          return done(err);
 
           // if the user is found, then log them in
         if (user) {
-            return done(null, user); // user found, return that user
+          //TODO return token
+          console.log('xyz', user);
           }
 
         else {
@@ -38,8 +40,8 @@ passport.use('facebook', new FacebookStrategy({
 
             // set all of the facebook information in our user model
             newUser._id    = profile.emails[0].value;
-            newUser.fb_access_token = access_token; // we will save the token that facebook provides to the user
-            newUser.name  = profile.name;
+            newUser.fb_access_token = profile.access_token; // we will save the token that facebook provides to the user
+            newUser.name  = profile.name.givenName + " "+ profile.name.familyName;
 
 
             // save our user to the database

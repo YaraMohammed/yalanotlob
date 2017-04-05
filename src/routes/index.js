@@ -3,6 +3,7 @@ var express = require('express');
 var bodyParser  = require('body-parser');
 var passport = require('passport');
 var aoth = require('../controllers/auth');
+var user = require('../controllers/user');
 
 /* VARs */
 var router = express.Router();
@@ -13,7 +14,7 @@ router.use((req, res, next) => {
 	next();
 });
 
-// allow remote controlle 
+// allow remote controlle
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -31,8 +32,15 @@ router.route('/login').
 get((req, res) => {
 	res.render('auth/login');
 }).
-post(() => {
-	throw 'Not yet implemented';
+post((req, res) => {
+	user.token(req.body['user-email'], req.body['password'], function(token) {
+		console.log(token);
+		if (token != null) {
+			res.setCookie('token', token);
+		} else {
+			console.log('Authentication failed for '+req.body['user-email']);
+		}
+	});
 });
 
 // route for facebook authentication and login

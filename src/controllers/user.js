@@ -1,6 +1,5 @@
-var express = require('express');
-var mongoose = require('mongoose');
 var userModel = require('../models/user');
+var jwt = require('jsonwebtoken');
 
 module.exports = {
 
@@ -20,8 +19,16 @@ module.exports = {
 	},
 
 	// user login
-	token: function(userEmail, password) {
-		throw 'Not yet implemented';
+	token: function(userEmail, password,cb) {
+		userModel.findOne({'_id': userEmail , 'password': password},function (err, data) {
+			if(data != null){
+				var token = jwt.sign({ '_id': userEmail }, 'secret', { algorithm: 'HS256'});
+				cb(token);
+			}
+			else {
+				cb(null);
+			}
+		});
 	},
 
 	// to know the token owner

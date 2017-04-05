@@ -1,6 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var userModel = require('../models/user');
+var userModel = require('../models/users');
 
 module.exports = {
 	// register a new user
@@ -27,11 +27,29 @@ module.exports = {
 	},
 	// add new friend
 	addFriend: function(userEmail, friendEmail) {
-		throw 'Not yet implemented';
+		// check if friend email exist
+		userModel.findById(friendEmail, function(err, data) {
+		  if (err) throw err;
+			// check if the friend already added
+			userModel.find(({ _id: userEmail, friends: friendEmail}, function(err, data) {
+			  if (err){
+						//  add friend in user friends list
+						userModel.findOneAndUpdate({ _id: userEmail }, { $push: { friends: friendEmail } }, function(err, data) {
+			  			if (err) throw err;
+			  			console.log(data);
+						});
+					}else{
+						console.log("Friend Already Exists");
+					}
+				});
+		});
 	},
 	// remove friend
 	removeFriend: function(userEmail, friendEmail) {
-		throw 'Not yet implemented';
+		userModel.findOneAndUpdate({ _id: userEmail }, { $pull: { friends: friendEmail } }, function(err, data) {
+			if (err) throw err;
+			console.log(data);
+		});
 	},
 	// create new group
 	createGroup: function(userEmail, groupName) {
@@ -47,6 +65,10 @@ module.exports = {
 	},
 	// remove member from group
 	removeFromGroup: function(userEmail, groupName, friendEmail) {
+		throw 'Not yet implemented';
+	}
+	// list all user friends
+	listFriends: function(userEmail) {
 		throw 'Not yet implemented';
 	}
 };

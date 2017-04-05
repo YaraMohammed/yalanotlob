@@ -8,12 +8,18 @@ module.exports = {
 		var newUser = new userModel({
 			_id: userEmail,
 			name: userName,
+			fb_access_token: '',
 			password: userPassword,
-			imageUrl: imageUrl
+			friends: [],
+			orderRequests: [],
+			imageUrl: imageUrl,
+			groups: {}
 		});
 		newUser.save(function(err,data){
 			if(!err){
 				console.log(data);
+			} else {
+				console.log(err);
 			}
 		});
 	},

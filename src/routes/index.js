@@ -33,10 +33,11 @@ get((req, res) => {
 	res.render('auth/login');
 }).
 post((req, res) => {
-	user.token(req.body['user-email'], req.body['password'], function(token) {
+	user.token(req.body['user-email'], req.body['user-pass'], function(token) {
 		console.log(token);
 		if (token != null) {
-			res.setCookie('token', token);
+			res.cookie('token', token);
+			res.redirect('/home')
 		} else {
 			console.log('Authentication failed for '+req.body['user-email']);
 		}
@@ -59,8 +60,15 @@ router.route('/register').
 get((req, res) => {
 	res.render('auth/register');
 }).
-post(() => {
-	throw 'Not yet implemented';
+post((req, res) => {
+	console.log(req.body);
+	user.register(
+		req.body['user-name'],
+		req.body['user-email'],
+		req.body['user-pass'],
+		''
+	);
+	res.redirect('/login');
 });
 
 router.route('/forgot-pass').

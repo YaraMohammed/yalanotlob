@@ -8,6 +8,7 @@ var schema = new mongoose.Schema({
 	password: String,
 	friends: [String],
 	orderRequests: [String],
+	imageUrl: String,
 	groups: Object
 });
 

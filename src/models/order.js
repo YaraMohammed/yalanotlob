@@ -16,7 +16,7 @@ var schema = new mongoose.Schema({
 			enum: ['waiting', 'accepted']
 		}
 	}],
-	menuImage: String,
+	menuImageUrl: String,
 	orders: [{
 		owner: String,
 		item: String,

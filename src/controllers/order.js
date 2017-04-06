@@ -3,8 +3,9 @@ var Order = require('../models/order');
 module.exports = {
 	// create new order functions
 	create: function(userEmail, type, restaurant, friends, menuImageUrl) {
-		var reqs;
+		var reqs = {};
 		for (var friend of friends) {
+			friend = new Buffer(friend).toString('base64');
 			reqs[friend] = 'waiting';
 		}
 		var order = new Order({
@@ -28,6 +29,7 @@ module.exports = {
 		Order.findOne({
 			'_id': orderID
 		}, (err, order) => {
+			userEmail = new Buffer(userEmail).toString('base64');
 			if (order.requests[userEmail] == undefined)
 			{
 				throw 'Error';

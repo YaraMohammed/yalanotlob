@@ -39,7 +39,10 @@ module.exports = {
 
 	// to know the token owner
 	userEmail: function(token) {
-		throw 'Not yet implemented';
+		var payload = jwt.verify(token, 'secret');
+		if (payload != null) {
+			return payload._id;
+		}
 	},
 
 	// add new friend

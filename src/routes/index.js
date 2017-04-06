@@ -4,20 +4,21 @@ var bodyParser  = require('body-parser');
 var passport = require('passport');
 var auth = require('../controllers/auth');
 var user = require('../controllers/user');
+var order = require('../controllers/order');
+var cookieParser = require('cookie-parser');
 
 /* VARs */
 var router = express.Router();
 
 /* ROUTING */
-router.use((req, res, next) => {
+router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
-	next();
-});
-
-// allow remote controlle
-router.use(function(req, res, next) {
+	// allow remote control
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	if (req.cookies.token) {
+		res.locals.email = user.userEmail(req.cookies.token);
+	}
 	next();
 });
 
@@ -37,7 +38,7 @@ post((req, res) => {
 		console.log(token);
 		if (token != null) {
 			res.cookie('token', token);
-			res.redirect('/home')
+			res.redirect('/home');
 		} else {
 			console.log('Authentication failed for '+req.body['user-email']);
 		}
@@ -103,8 +104,20 @@ router.get('/order', (req, res) => {
 	res.render('user/order');
 });
 
-router.get('/order-new', (req, res) => {
+router.route('/order-new').
+get((req, res) => {
 	res.render('user/order-new');
+}).
+post((req, res) => {
+	console.log(req.body);
+	order.create(
+		res.locals.email,
+		req.body['order-type'],
+		req.body['order-restaurant'],
+		req.body['order-friends'].split(','),
+		''
+	);
+	res.redirect('/orders');
 });
 
 router.get('/order-sum', (req, res) => {

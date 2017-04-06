@@ -1,5 +1,5 @@
 {{> user/nav}}
-<form method="post" enctype="multipart/form-data">
+<form method="post">
 	<div>
 		<label>Order for</label>
 		<select name="order-type">
@@ -14,7 +14,8 @@
 	</div>
 	<div>
 		<label>Friends</label>
-		<input type="text" id="order-friend">
+		<input type="text" name="order-friends">
+		<!-- TODO add friends list -->
 	</div>
 	<div>
 		<label>Menu Image</label>

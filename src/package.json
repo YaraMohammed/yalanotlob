@@ -12,6 +12,7 @@
     "mongoose": "^4.9.2",
     "passport": "^0.3.2",
     "passport-facebook": "*",
+    "passport-google-oauth2": "*",
     "socket.io": "^1.7.3"
   }
 }

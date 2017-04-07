@@ -14,12 +14,7 @@ module.exports = {
 	},
 	'googleAuth':{
 		"client_id":"891495422803-1k89d5vfse7pjjdh3cusd04ilqhifbip.apps.googleusercontent.com",
-		"project_id":"yalanotlob-163721",
-		"auth_uri":"https://accounts.google.com/o/oauth2/auth",
-		"token_uri":"https://accounts.google.com/o/oauth2/token",
-		"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
 		"client_secret":"KsworCzD2l5uuuWe918DYAxF",
-		"redirect_uris":["http://localhost:8888/login/google/callback"],
-		"javascript_origins":["http://localhost:8080"]
+		"callbackUrl":"http://localhost:8888/login/google/callback",
 	}
 };

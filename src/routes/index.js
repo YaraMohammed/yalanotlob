@@ -58,10 +58,12 @@ router.get('/login/facebook/callback',
 );
 
 // route for google authentication and login
-router.get('/login/google', passport.authenticate('google', { scope: 
-  	[ 'https://www.googleapis.com/auth/plus.login',
-  	, 'https://www.googleapis.com/auth/plus.profile.emails.read' ] }
-));
+router.get('/login/google', passport.authenticate('google', {
+	scope: [
+		'https://www.googleapis.com/auth/plus.login',
+		'https://www.googleapis.com/auth/plus.profile.emails.read'
+	]
+}));
 
 // handle the callback after google has authenticated the user
 router.get('/login/google/callback',

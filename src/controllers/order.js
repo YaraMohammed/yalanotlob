@@ -55,8 +55,9 @@ module.exports = {
 								{
 									var id = data._id;
 									var uid = new Buffer(key, 'base64').toString('ascii');
-									User.update({'_id':new Buffer(key, 'base64').toString('ascii')},{$push:{'orderRequests':id}});
-									console.log('Key ',key,' Reqs[Key]',reqs[key],'Order ID ',id,'userId ',uid);
+									User.findOneAndUpdate({'_id':uid},{$addToSet:{'orderRequests':id}}, function(err) {
+										console.log(err);
+									});
 
 								}
 							}
@@ -72,18 +73,6 @@ module.exports = {
 
 	// get order details
 	get: function(userEmail, orderID, cb)
-	{
-		Order.findOne(
-			{
-				'_id': orderID
-			}, (err, order) => {
-			cb(order);
-		}
-	);
-	},
-
-	// get order details
-	getOrder: function(userEmail, orderID, cb)
 	{
 		Order.findOne(
 			{

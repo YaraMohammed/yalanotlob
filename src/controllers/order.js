@@ -58,6 +58,15 @@ module.exports = {
 		});
 	},
 
+	// get order details
+	get: function(userEmail, orderID, cb) {
+		Order.findOne({
+			'_id': orderID
+		}, (err, order) => {
+			cb(order);
+		});
+	},
+
 	// accept order invitation
 	accept: function(userEmail, orderID) {
 		Order.findOne({

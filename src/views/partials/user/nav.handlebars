@@ -1,10 +1,10 @@
 <nav>
-	<a href="/home">Home</a>
+	<a href="/">Home</a>
 	<a href="/friends">Friends</a>
 	<a href="/groups">Groups</a>
 	<a href="/orders">Orders</a>
-	<a href="/profile">\{{user.name}}</a>
-	<a href="/">Logout</a>
+	<a href="/profile">{{email}}</a>
+	<a href="/" onclick="document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 GMT'">Logout</a>
 	<div>
 	    <div>
 	        Notifications

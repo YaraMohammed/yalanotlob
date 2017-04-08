@@ -6,7 +6,9 @@ module.exports = {
 	// create new order functions
 	create: function(userEmail, type, restaurant, friends, menuImageUrl) {
 		var reqs = {};
+		var i = 0;
 		for (var friend of friends) {
+
 			friend = new Buffer(friend).toString('base64');
 			User.findOne({'_id': new Buffer(friend, 'base64').toString('ascii')},function (err , data) {
 				if(data != null)
@@ -17,27 +19,42 @@ module.exports = {
 					console.log(d);
 					console.log(data);
 					reqs[d] = 'waiting';
+
 				}
 				else
 				{
 					console.log('Friend Email does not exist');
+
+				}
+				i++;
+				if(i == friends.length){
+					console.log('Reqs', reqs);
+					var order = new Order({
+						owner: userEmail,
+						type: type,
+						restaurant: restaurant,
+						requests: reqs,
+						menuImageUrl: menuImageUrl,
+						orders: [],
+						status: 'waiting'
+					});
+					order.save(function(err,data){
+						if(!err){
+							console.log(data);
+						}
+					});
 				}
 			});
 		}
 
-		var order = new Order({
-			owner: userEmail,
-			type: type,
-			restaurant: restaurant,
-			requests: reqs,
-			menuImageUrl: menuImageUrl,
-			orders: [],
-			status: 'waiting'
-		});
-		order.save(function(err,data){
-			if(!err){
-				console.log(data);
-			}
+	},
+
+	// get order details
+	get: function(userEmail, orderID, cb) {
+		Order.findOne({
+			'_id': orderID
+		}, (err, order) => {
+			cb(order);
 		});
 	},
 
@@ -59,7 +76,7 @@ module.exports = {
 	},
 
 	// add an item to order
-	addItem: function(userEmail, orderID, item, amount, price, comment) {
+	addItem: function(userEmail, orderID, item, amount, price, comment, cb) {
 
 		var itoma ={
 			owner: userEmail,
@@ -68,12 +85,13 @@ module.exports = {
 			price: price,
 			comment: comment
 		};
-		Order.findOneAndUpdate({'_id': orderID},{$set:{$push:{'orders':itoma}}},function (err,data) {
+		Order.findOneAndUpdate({'_id': orderID},{$push:{'orders':itoma}},function (err,data) {
 			if(!err){
 				console.log(data);
 			}else{
 				console.error(err);
 			}
+			cb(err);
 		});
 	},
 

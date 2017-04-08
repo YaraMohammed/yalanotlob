@@ -1,4 +1,6 @@
 var Order = require('../models/order');
+var User = require('../models/user');
+
 
 module.exports = {
 	// create new order functions
@@ -6,8 +8,23 @@ module.exports = {
 		var reqs = {};
 		for (var friend of friends) {
 			friend = new Buffer(friend).toString('base64');
-			reqs[friend] = 'waiting';
+			User.findOne({'_id': new Buffer(friend, 'base64').toString('ascii')},function (err , data) {
+				if(data != null)
+				{
+					var d = data._id;
+					console.log(d);
+					d = new Buffer(d).toString('base64');
+					console.log(d);
+					console.log(data);
+					reqs[d] = 'waiting';
+				}
+				else
+				{
+					console.log('Friend Email does not exist');
+				}
+			});
 		}
+
 		var order = new Order({
 			owner: userEmail,
 			type: type,

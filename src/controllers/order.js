@@ -53,9 +53,13 @@ module.exports = {
 							{
 								if(reqs.hasOwnProperty(key))
 								{
-									var id = data._id;
+									var oid = data._id;
+									var orderOwner = data.owner;
 									var uid = new Buffer(key, 'base64').toString('ascii');
-									User.findOneAndUpdate({'_id':uid},{$addToSet:{'orderRequests':id}}, function(err) {
+									User.findOneAndUpdate({'_id':uid},{$addToSet:{'orderRequests':oid}}, function(err) {
+										console.log(err);
+									});
+									User.findOneAndUpdate({'_id': orderOwner},{$addToSet:{'orders':oid}},function (err) {
 										console.log(err);
 									});
 
@@ -98,6 +102,10 @@ module.exports = {
 			else
 			{
 				order.requests[userEmail] = 'accepted';
+				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
+				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
+					console.log(err);
+				});
 			}
 		}
 	);

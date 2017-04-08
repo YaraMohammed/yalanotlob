@@ -1,4 +1,8 @@
 {{> user/nav}}
+Owner: {{order.owner}}<br>
+Type: {{order.type}}<br>
+Restaurant: {{order.restaurant}}<br>
+Status: {{order.status}}<br>
 <table>
 	<thead>
 		<tr>
@@ -11,14 +15,16 @@
 		</tr>
 	</thead>
 	<tbody>
+	{{#each order.orders}}
 		<tr>
-			<td>\{{order.owner}}</td>
-			<td>\{{order.item}}</td>
-			<td>\{{order.amount}}</td>
-			<td>\{{order.price}}</td>
-			<td>\{{order.comment}}</td>
+			<td>{{owner}}</td>
+			<td>{{item}}</td>
+			<td>{{amount}}</td>
+			<td>{{price}}</td>
+			<td>{{comment}}</td>
 			<td><a href="#">Delete</a></td>
 		</tr>
+	{{/each}}
 	</tbody>
 </table>
 <form method="post">

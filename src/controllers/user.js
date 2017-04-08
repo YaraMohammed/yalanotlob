@@ -39,9 +39,13 @@ module.exports = {
 
 	// to know the token owner
 	userEmail: function(token) {
-		var payload = jwt.verify(token, 'secret');
-		if (payload != null) {
-			return payload._id;
+		try {
+			var payload = jwt.verify(token, 'secret');
+			if (payload != null) {
+				return payload._id;
+			}
+		} catch(e) {
+			return;
 		}
 	},
 

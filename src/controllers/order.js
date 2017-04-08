@@ -24,6 +24,15 @@ module.exports = {
 		});
 	},
 
+	// get order details
+	get: function(userEmail, orderID, cb) {
+		Order.findOne({
+			'_id': orderID
+		}, (err, order) => {
+			cb(order);
+		});
+	},
+
 	// accept order invitation
 	accept: function(userEmail, orderID) {
 		Order.findOne({
@@ -42,7 +51,7 @@ module.exports = {
 	},
 
 	// add an item to order
-	addItem: function(userEmail, orderID, item, amount, price, comment) {
+	addItem: function(userEmail, orderID, item, amount, price, comment, cb) {
 
 		var itoma ={
 			owner: userEmail,
@@ -51,12 +60,13 @@ module.exports = {
 			price: price,
 			comment: comment
 		};
-		Order.findOneAndUpdate({'_id': orderID},{$set:{$push:{'orders':itoma}}},function (err,data) {
+		Order.findOneAndUpdate({'_id': orderID},{$push:{'orders':itoma}},function (err,data) {
 			if(!err){
 				console.log(data);
 			}else{
 				console.error(err);
 			}
+			cb(err);
 		});
 	},
 

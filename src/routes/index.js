@@ -13,6 +13,11 @@ var router = express.Router();
 /* ROUTING */
 router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
+	res.locals.helpers = {
+		b64Decode: function(b64) {
+			return Buffer.from(b64, 'base64').toString();
+		}
+	};
 	// allow remote control
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -26,21 +31,32 @@ router.use(cookieParser(), (req, res, next) => {
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
-	res.render('index');
+	if (res.locals.email) {
+		order.latestOrders(res.locals.email, (orders) => {
+			res.locals.orders = orders;
+			res.render('user/index');
+		});
+	} else {
+		res.render('index');
+	}
 });
 
 router.route('/login').
 get((req, res) => {
-	res.render('auth/login');
+	if (res.locals.email) {
+		res.redirect('/');
+	} else {
+		res.render('auth/login');
+	}
 }).
 post((req, res) => {
 	user.token(req.body['user-email'], req.body['user-pass'], function(token) {
-		console.log(token);
 		if (token != null) {
 			res.cookie('token', token);
-			res.redirect('/home');
+			res.redirect('/');
 		} else {
 			console.log('Authentication failed for '+req.body['user-email']);
+			res.redirect('/login');
 		}
 	});
 });
@@ -52,8 +68,8 @@ router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email
 // handle the callback after facebook has authenticated the user
 router.get('/login/facebook/callback',
 	passport.authenticate('facebook', {
-		successRedirect : '/home',
-		failureRedirect : '/'
+		successRedirect: '/',
+		failureRedirect: '/login'
 	})
 );
 
@@ -68,14 +84,18 @@ router.get('/login/google', passport.authenticate('google', {
 // handle the callback after google has authenticated the user
 router.get('/login/google/callback',
 	passport.authenticate('google', {
-		successRedirect : '/home',
-		failureRedirect : '/'
+		successRedirect: '/',
+		failureRedirect: '/login'
 	})
 );
 
 router.route('/register').
 get((req, res) => {
-	res.render('auth/register');
+	if(res.locals.email) {
+		res.redirect('/');
+	} else {
+		res.render('auth/register');
+	}
 }).
 post((req, res) => {
 	console.log(req.body);
@@ -96,10 +116,6 @@ post(() => {
 	throw 'Not yet implemented';
 });
 
-router.get('/home', (req, res) => {
-	res.render('user/home');
-});
-
 router.get('/profile', (req, res) => {
 	res.render('user/profile');
 });
@@ -116,8 +132,28 @@ router.get('/orders', (req, res) => {
 	res.render('user/orders');
 });
 
-router.get('/order', (req, res) => {
-	res.render('user/order');
+router.route('/order/:orderID').
+get((req, res) => {
+	order.get(res.locals.email, req.params.orderID, (order) => {
+		res.render('user/order', {order: order});
+	});
+}).
+post((req, res) => {
+	console.log(req.body);
+	order.addItem(
+		res.locals.email,
+		req.params.orderID,
+		req.body['order-item'],
+		req.body['order-amount'],
+		req.body['order-price'],
+		req.body['order-comment'],
+		() => {
+			// TODO handle error
+			order.get(res.locals.email, req.params.orderID, (order) => {
+				res.render('user/order', {order: order});
+			});
+		}
+	);
 });
 
 router.route('/order-new').
@@ -133,6 +169,7 @@ post((req, res) => {
 		req.body['order-friends'].split(','),
 		''
 	);
+	// TODO get `_id` of created order and redirect to /order/`_id`
 	res.redirect('/orders');
 });
 

@@ -2,7 +2,11 @@
 <div>
     <h2>Latest Orders</h2>
     <div>
-        \{{orders.latest}}
+        <ul>
+        {{#each orders}}
+            <li><a href="/order/{{_id}}">{{type}} from {{restaurant}}</a></li>
+        {{/each}}
+        </ul>
     </div>
 </div>
 <div>

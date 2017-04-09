@@ -193,7 +193,7 @@ module.exports = {
 	// list all user orders
 	listOrders: function (userEmail, orderIds, cb)
 	{
-		Order.find({'_id': userEmail},function (err, data) {
+		Order.find({'_id': {$in: orderIds}},function (err, data) {
 			if(!err)
 			{
 				cb(null, data);

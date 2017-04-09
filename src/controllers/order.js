@@ -177,9 +177,9 @@ module.exports = {
 	},
 
 	// lists 5 recent orders
-	latestOrders: function(userEmail, cb)
+	latestOrders: function(userEmail, orderIds, cb)
 	{
-		Order.find({'owner': userEmail},function(err,data)
+		Order.find({'_id': {$in: orderIds}},function(err,data)
 		{
 			if(!err)
 			{
@@ -191,9 +191,9 @@ module.exports = {
 	},
 
 	// list all user orders
-	listOrders: function (userEmail, cb)
+	listOrders: function (userEmail, orderIds, cb)
 	{
-		Order.find({'owner': userEmail},function (err, data) {
+		Order.find({'_id': userEmail},function (err, data) {
 			if(!err)
 			{
 				cb(null, data);

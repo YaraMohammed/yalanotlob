@@ -138,7 +138,8 @@ router.get('/groups', (req, res) => {
 });
 
 router.get('/orders', (req, res) => {
-	res.listOrders(res.locals.user._id, (err, data) => {
+	order.listOrders(res.locals.user._id, (err, data) => {
+		console.log(err,data);
 		res.render('user/orders', {orders: data});
 	});
 });

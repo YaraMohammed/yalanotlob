@@ -1,5 +1,6 @@
 module.exports = {
 	'app': {
+		'host': 'localhost',
 		'port': 8888
 	},
 	'database': {

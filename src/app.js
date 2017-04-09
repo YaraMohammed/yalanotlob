@@ -15,7 +15,7 @@ var sio = socketIO(server);
 /* INIT */
 mongoose.connect('mongodb://'+config.database.hostname+':'+config.database.port+'/'+config.database.name);
 
-// require('./routes/sio').serve(sio);
+require('./controllers/sio').serve(sio);
 
 app.engine('handlebars', handlebars({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');

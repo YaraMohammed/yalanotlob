@@ -5,7 +5,8 @@ module.exports = {
 		sio = sioNew;
 
 		sio.on('connection', (sock) => {
-			throw 'Not yet implemented';
+			console.log("connected")
+			// throw 'Not yet implemented';
 		});
 	},
 	broadcast: function(key, value) {

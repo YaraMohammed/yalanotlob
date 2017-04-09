@@ -83,6 +83,13 @@ module.exports = {
 	);
 	},
 
+	// get order requests' details
+	getOrderRequests: function(userEmail, orderRequestIds, cb) {
+		Order.find({'_id': {$in: orderRequestIds}}, (err, data) => {
+			cb(data);
+		});
+	},
+
 	// accept order invitation
 	accept: function(userEmail, orderID)
 	{

@@ -24,6 +24,15 @@ module.exports = {
 		});
 	},
 
+	// get user data
+	get: function(userEmail, cb) {
+		userModel.findOne({
+			'_id': userEmail
+		}, (err, user) => {
+			cb(user);
+		});
+	},
+
 	// user login
 	token: function(userEmail, password,cb) {
 		userModel.findOne({'_id': userEmail , 'password': password},function (err, data) {

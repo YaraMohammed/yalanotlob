@@ -2,7 +2,7 @@
 var express = require('express');
 var bodyParser  = require('body-parser');
 var passport = require('passport');
-var auth = require('../controllers/auth');
+require('../controllers/auth');
 var user = require('../controllers/user');
 var order = require('../controllers/order');
 var cookieParser = require('cookie-parser');
@@ -22,17 +22,26 @@ router.use(cookieParser(), (req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	if (req.cookies.token) {
-		res.locals.email = user.userEmail(req.cookies.token);
+		var email = user.userEmail(req.cookies.token);
+		user.get(email, (user) => {
+			res.locals.user = user;
+			// list all notifications
+			order.getOrderRequests(email, user.orderRequests, (data) => {
+				res.locals.orderRequests = data;
+				next();
+			});
+		});
+	} else {
+		next();
 	}
-	next();
 });
 
 // use body parser so we can get info from POST and/or URL parameters
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
-	if (res.locals.email) {
-		order.latestOrders(res.locals.email, (orders) => {
+	if (res.locals.user) {
+		order.latestOrders(res.locals.user._id, (orders) => {
 			res.locals.orders = orders;
 			res.render('user/index');
 		});
@@ -43,7 +52,7 @@ router.get('/', (req, res) => {
 
 router.route('/login').
 get((req, res) => {
-	if (res.locals.email) {
+	if (res.locals.user) {
 		res.redirect('/');
 	} else {
 		res.render('auth/login');
@@ -91,7 +100,7 @@ router.get('/login/google/callback',
 
 router.route('/register').
 get((req, res) => {
-	if(res.locals.email) {
+	if (res.locals.user) {
 		res.redirect('/');
 	} else {
 		res.render('auth/register');
@@ -134,14 +143,14 @@ router.get('/orders', (req, res) => {
 
 router.route('/order/:orderID').
 get((req, res) => {
-	order.get(res.locals.email, req.params.orderID, (order) => {
+	order.get(res.locals.user._id, req.params.orderID, (order) => {
 		res.render('user/order', {order: order});
 	});
 }).
 post((req, res) => {
 	console.log(req.body);
 	order.addItem(
-		res.locals.email,
+		res.locals.user._id,
 		req.params.orderID,
 		req.body['order-item'],
 		req.body['order-amount'],
@@ -149,11 +158,16 @@ post((req, res) => {
 		req.body['order-comment'],
 		() => {
 			// TODO handle error
-			order.get(res.locals.email, req.params.orderID, (order) => {
+			order.get(res.locals.user._id, req.params.orderID, (order) => {
 				res.render('user/order', {order: order});
 			});
 		}
 	);
+});
+
+router.get('/order/:orderID/accept', (req, res) => {
+	order.accept(res.locals.user._id, req.params.orderID);
+	res.send();
 });
 
 router.route('/order-new').
@@ -163,7 +177,7 @@ get((req, res) => {
 post((req, res) => {
 	console.log(req.body);
 	order.create(
-		res.locals.email,
+		res.locals.user._id,
 		req.body['order-type'],
 		req.body['order-restaurant'],
 		req.body['order-friends'].split(','),

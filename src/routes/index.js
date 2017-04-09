@@ -26,10 +26,14 @@ router.use(cookieParser(), (req, res, next) => {
 		user.get(email, (user) => {
 			res.locals.user = user;
 			// list all notifications
-			order.getOrderRequests(email, user.orderRequests, (data) => {
-				res.locals.orderRequests = data;
+			if (user) {
+				order.getOrderRequests(email, user.orderRequests, (data) => {
+					res.locals.orderRequests = data;
+					next();
+				});
+			} else {
 				next();
-			});
+			}
 		});
 	} else {
 		next();

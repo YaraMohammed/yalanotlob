@@ -13,19 +13,19 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-		{{#each orders}}
-			<td>{{type}}</td>
-			<td>{{restaurant}}</td>
-			<td>\{{invited}}</td>
-			<td>\{{joined}}</td>
-			<td>{{status}}</td>
-			<td>
-				<a href="/order">View</a>
-				<a href="#">Finish</a>
-				<a href="#">Cancel</a>
-			</td>
-		{{/each}}
-		</tr>
+	{{#each orders}}
+	<tr>
+		<td>{{type}}</td>
+		<td>{{restaurant}}</td>
+		<td>\{{invited}}</td>
+		<td>\{{joined}}</td>
+		<td>{{status}}</td>
+		<td>
+			<a href="/order">View</a>
+			<a href="#">Finish</a>
+			<a href="#">Cancel</a>
+		</td>
+	</tr>
+	{{/each}}
 	</tbody>
 </table>

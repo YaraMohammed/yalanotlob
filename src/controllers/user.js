@@ -4,24 +4,34 @@ var jwt = require('jsonwebtoken');
 module.exports = {
 
 	// register a new user
-	register: function(userName, userEmail, userPassword, imageUrl) {
-		var newUser = new userModel({
-			_id: userEmail,
-			name: userName,
-			fb_access_token: '',
-			password: userPassword,
-			friends: [],
-			orderRequests: [],
-			imageUrl: imageUrl,
-			groups: {}
-		});
-		newUser.save(function(err,data){
-			if(!err){
-				console.log(data);
-			} else {
-				console.log(err);
-			}
-		});
+	register: function(userName, userEmail, userPassword, userPasswordConfirm, imageUrl, cb) {
+		if ((userPassword.length>=6) && (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail))&&(userPasswordConfirm == userPassword))
+		{
+			var newUser = new userModel({
+				_id: userEmail,
+				name: userName,
+				fb_access_token: '',
+				password: userPassword,
+				friends: [],
+				orderRequests: [],
+				imageUrl: imageUrl,
+				groups: {}
+			});
+			newUser.save(function(err,data){
+				if(!err){
+					console.log(data);
+					cb(null);
+				} else {
+					console.log(err);
+					cb(err);
+				}
+			});
+		}else
+		{
+			console.log('you entered wrong data');
+			cb('you entered wrong data');
+		}
+
 	},
 
 	// get user data

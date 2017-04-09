@@ -45,6 +45,10 @@ module.exports = {
 
 	// user login
 	token: function(userEmail, password,cb) {
+		if (!password) {
+			cb(null);
+			return;
+		}
 		userModel.findOne({'_id': userEmail , 'password': password},function (err, data) {
 			if(data != null){
 				var token = jwt.sign({ '_id': userEmail }, 'secret', { algorithm: 'HS256'});
@@ -104,10 +108,14 @@ module.exports = {
 		var groupCriteria =  'groups.'+groupName;
 		var q = {_id: userEmail};
 		q[groupCriteria] = {$exists: true};
+
+		// var criteria = 'requests.'+userEmail;
+		var group = {};
+		group['groups.'+groupName] = [];
 		userModel.findOne(q, function(err, data) {
 			if (data == null){
 				//  add friend in user friends list
-				userModel.update({_id: userEmail},{$set:{groups:{groupName:[]}}}, function(err, data) {
+				userModel.update({_id: userEmail},{$set:group}, function(err, data) {
 					if (err) throw err;
 					console.log(data);
 				});

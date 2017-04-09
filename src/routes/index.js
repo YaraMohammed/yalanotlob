@@ -14,8 +14,13 @@ var router = express.Router();
 router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
 	res.locals.helpers = {
-		b64Decode: function(b64) {
-			return Buffer.from(b64, 'base64').toString();
+		ifEq: function(x1, x2, options) {
+			console.log(x1, x2);
+			if (x1 == x2) {
+				return options.fn(this);
+			} else {
+				return options.inverse(this);
+			}
 		}
 	};
 	// allow remote control
@@ -32,6 +37,7 @@ router.use(cookieParser(), (req, res, next) => {
 					next();
 				});
 			} else {
+				res.cookie('token', '');
 				next();
 			}
 		});
@@ -47,7 +53,11 @@ router.get('/', (req, res) => {
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
-			res.render('user/index');
+			order.friendsActivity(res.locals.user.friends, (err, data) => {
+				res.locals.friendsActivity = data;
+				console.log(data);
+				res.render('user/index');
+			});
 		});
 	} else {
 		res.render('index');
@@ -163,9 +173,19 @@ post((req,res) =>{
 });
 
 
-router.get('/groups', (req, res) => {
+router.route('/groups').
+get((req, res) => {
 	res.render('user/groups');
+}).
+post((req, res) =>{
+	console.log(req.body);
+	user.createGroup(
+		res.locals.user._id,
+		req.body['add-group']
+	);
+	res.redirect('groups');
 });
+
 
 router.get('/orders', (req, res) => {
 	order.listOrders(res.locals.user._id, res.locals.user.orders, (err, data) => {
@@ -213,10 +233,15 @@ post((req, res) => {
 		req.body['order-type'],
 		req.body['order-restaurant'],
 		req.body['order-friends'].split(','),
-		''
+		'',
+		(err, orderID) => {
+			if (!err) {
+				res.redirect('/order/'+orderID);
+			} else {
+				res.redirect('/orders');
+			}
+		}
 	);
-	// TODO get `_id` of created order and redirect to /order/`_id`
-	res.redirect('/orders');
 });
 
 router.get('/order-sum', (req, res) => {

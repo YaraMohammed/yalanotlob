@@ -12,6 +12,8 @@
 <div>
     <h2>Friends' Activity</h2>
     <div>
-        \{{friends.activity}}
+    {{#each friendsActivity}}
+        <a href="/profile/{{owner}}">{{owner}}</a> made an order for {{type}} from {{restaurant}}<br>
+    {{/each}}
     </div>
 </div>

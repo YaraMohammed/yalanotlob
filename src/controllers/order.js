@@ -209,8 +209,10 @@ module.exports = {
 	},
 
 	// lists friends activity
-	friendsActivity: function(friendsEmails) {
-		throw 'Not yet implemented';
+	friendsActivity: function(friendsEmails, cb) {
+		Order.find({owner: {$in: friendsEmails}}, (err, data) => {
+			cb(err, data);
+		});
 		// Map Reduce
 	}
 };

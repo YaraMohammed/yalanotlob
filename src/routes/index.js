@@ -53,7 +53,11 @@ router.get('/', (req, res) => {
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
-			res.render('user/index');
+			order.friendsActivity(res.locals.user.friends, (err, data) => {
+				res.locals.friendsActivity = data;
+				console.log(data);
+				res.render('user/index');
+			});
 		});
 	} else {
 		res.render('index');

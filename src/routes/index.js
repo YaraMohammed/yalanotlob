@@ -143,9 +143,19 @@ router.get('/profile', (req, res) => {
 	res.render('user/profile');
 });
 
-router.get('/friends', (req, res) => {
+router.route('/friends').
+get((req, res) =>{
 	res.render('user/friends');
+}).
+post((req,res) =>{
+	console.log(req.body);
+	user.addFriend(
+		res.locals.user._id,
+		req.body['add-friend']
+	);
+	res.redirect('friends');
 });
+
 
 router.get('/groups', (req, res) => {
 	res.render('user/groups');

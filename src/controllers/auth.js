@@ -3,6 +3,7 @@ var User = require('../models/user');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var jwt = require('jsonwebtoken');
 
 
 //authentication for facebook
@@ -35,11 +36,11 @@ function logUser(profile, done){
 			return done(err);
 
 		if (user) {
-			//TODO return token to login user
-			console.log('xyz', user);
+			var token = jwt.sign({ '_id': user._id }, 'secret', { algorithm: 'HS256'});
+			return done(null,token);
 		}
 
-		//new user
+		//register new user
 		else {
 			var newUser = new User();
 
@@ -49,7 +50,8 @@ function logUser(profile, done){
 			newUser.save(function(err) {
 
 				if (!err)
-					return done(null, newUser);
+					var token = jwt.sign({ '_id': newUser._id }, 'secret', { algorithm: 'HS256'});
+					return done(null,token);
 			});
 		}
 	});

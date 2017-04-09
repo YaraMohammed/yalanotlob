@@ -4,24 +4,34 @@ var jwt = require('jsonwebtoken');
 module.exports = {
 
 	// register a new user
-	register: function(userName, userEmail, userPassword, imageUrl) {
-		var newUser = new userModel({
-			_id: userEmail,
-			name: userName,
-			fb_access_token: '',
-			password: userPassword,
-			friends: [],
-			orderRequests: [],
-			imageUrl: imageUrl,
-			groups: {}
-		});
-		newUser.save(function(err,data){
-			if(!err){
-				console.log(data);
-			} else {
-				console.log(err);
-			}
-		});
+	register: function(userName, userEmail, userPassword, userPasswordConfirm, imageUrl, cb) {
+		if ((userPassword.length>=6) && (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail))&&(userPasswordConfirm == userPassword))
+		{
+			var newUser = new userModel({
+				_id: userEmail,
+				name: userName,
+				fb_access_token: '',
+				password: userPassword,
+				friends: [],
+				orderRequests: [],
+				imageUrl: imageUrl,
+				groups: {}
+			});
+			newUser.save(function(err,data){
+				if(!err){
+					console.log(data);
+					cb(null);
+				} else {
+					console.log(err);
+					cb(err);
+				}
+			});
+		}else
+		{
+			console.log('you entered wrong data');
+			cb('you entered wrong data');
+		}
+
 	},
 
 	// get user data
@@ -65,20 +75,23 @@ module.exports = {
 	// add new friend
 	addFriend: function(userEmail, friendEmail) {
 		// check if friend email exist
-		userModel.findById(friendEmail, function(err) {
-			if (err) throw err;
+		userModel.findById(friendEmail, function(err, data) {
+			if (err || !data) console.log(err);
 			// check if the friend already added
-			userModel.findOne({ _id: userEmail, friends: friendEmail}, function(err, data) {
-				if (data == null){
-					//  add friend in user friends list
-					userModel.findOneAndUpdate({ _id: userEmail },{$set: { $push: { friends: friendEmail }} }, function(err, data) {
-						if (err) throw err;
-						console.log(data);
-					});
-				}else{
-					console.log('Friend Already Exists');
-				}
-			});
+			else
+			{
+				userModel.findOne({ _id: userEmail, friends: friendEmail}, function(err, data) {
+					if (data == null){
+						//  add friend in user friends list
+						userModel.findOneAndUpdate({ _id: userEmail },{$addToSet: { friends: friendEmail }} , function(err, data) {
+							if (err) throw err;
+							console.log(data);
+						});
+					}else{
+						console.log('Friend Already Exists');
+					}
+				});
+			}
 		});
 	},
 
@@ -138,6 +151,12 @@ module.exports = {
 
 	// list all user friends
 	listFriends: function(userEmail) {
-		throw 'Not yet implemented';
+		console.log(userEmail)
+		userModel.findOne({ _id: userEmail}, function(err, data) {
+			if(err)
+				throw err
+			console.log(data.friends)
+			
+		})
 	}
 };

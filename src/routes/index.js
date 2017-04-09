@@ -87,9 +87,12 @@ router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email
 // handle the callback after facebook has authenticated the user
 router.get('/login/facebook/callback',
 	passport.authenticate('facebook', {
-		successRedirect: '/',
+		session: false ,
 		failureRedirect: '/login'
-	})
+	}),function(req,res){
+		res.cookie('token', req.user);
+		res.redirect('/')
+	}
 );
 
 // route for google authentication and login
@@ -103,9 +106,12 @@ router.get('/login/google', passport.authenticate('google', {
 // handle the callback after google has authenticated the user
 router.get('/login/google/callback',
 	passport.authenticate('google', {
-		successRedirect: '/',
+		session: false,
 		failureRedirect: '/login'
-	})
+	}),function(req,res){
+		res.cookie('token', req.user);
+		res.redirect('/')
+	}
 );
 
 router.route('/register').
@@ -122,9 +128,19 @@ post((req, res) => {
 		req.body['user-name'],
 		req.body['user-email'],
 		req.body['user-pass'],
-		''
+		req.body['user-pass-conf'],
+		'',
+		function (err) {
+			if(!err)
+			{
+				res.redirect('/login');
+			}
+			else
+			{
+				res.redirect('/register');
+			}
+		}
 	);
-	res.redirect('/login');
 });
 
 router.route('/forgot-pass').
@@ -139,9 +155,19 @@ router.get('/profile', (req, res) => {
 	res.render('user/profile');
 });
 
-router.get('/friends', (req, res) => {
+router.route('/friends').
+get((req, res) =>{
 	res.render('user/friends');
+}).
+post((req,res) =>{
+	console.log(req.body);
+	user.addFriend(
+		res.locals.user._id,
+		req.body['add-friend']
+	);
+	res.redirect('friends');
 });
+
 
 router.get('/groups', (req, res) => {
 	res.render('user/groups');

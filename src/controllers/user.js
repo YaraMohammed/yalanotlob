@@ -144,6 +144,12 @@ module.exports = {
 
 	// list all user friends
 	listFriends: function(userEmail) {
-		throw 'Not yet implemented';
+		console.log(userEmail)
+		userModel.findOne({ _id: userEmail}, function(err, data) {
+			if(err)
+				throw err
+			console.log(data.friends)
+			
+		})
 	}
 };

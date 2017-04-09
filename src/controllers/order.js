@@ -4,7 +4,7 @@ var User = require('../models/user');
 
 module.exports = {
 	// create new order functions
-	create: function(userEmail, type, restaurant, friends, menuImageUrl)
+	create: function(userEmail, type, restaurant, friends, menuImageUrl, cb)
 	{
 		var reqs = {};
 		var i = 0;
@@ -65,6 +65,9 @@ module.exports = {
 
 								}
 							}
+							cb(null, data._id);
+						} else {
+							cb(err);
 						}
 
 					}
@@ -90,6 +93,9 @@ module.exports = {
 	// get order requests' details
 	getOrderRequests: function(userEmail, orderRequestIds, cb) {
 		Order.find({'_id': {$in: orderRequestIds}}, (err, data) => {
+			for (var id in data) {
+				data[id].requests = data[id].requests[Buffer(userEmail).toString('base64')];
+			}
 			cb(data);
 		});
 	},

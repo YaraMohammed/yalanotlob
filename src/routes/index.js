@@ -14,8 +14,13 @@ var router = express.Router();
 router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
 	res.locals.helpers = {
-		b64Decode: function(b64) {
-			return Buffer.from(b64, 'base64').toString();
+		ifEq: function(x1, x2, options) {
+			console.log(x1, x2);
+			if (x1 == x2) {
+				return options.fn(this);
+			} else {
+				return options.inverse(this);
+			}
 		}
 	};
 	// allow remote control
@@ -32,6 +37,7 @@ router.use(cookieParser(), (req, res, next) => {
 					next();
 				});
 			} else {
+				res.cookie('token', '');
 				next();
 			}
 		});
@@ -223,10 +229,15 @@ post((req, res) => {
 		req.body['order-type'],
 		req.body['order-restaurant'],
 		req.body['order-friends'].split(','),
-		''
+		'',
+		(err, orderID) => {
+			if (!err) {
+				res.redirect('/order/'+orderID);
+			} else {
+				res.redirect('/orders');
+			}
+		}
 	);
-	// TODO get `_id` of created order and redirect to /order/`_id`
-	res.redirect('/orders');
 });
 
 router.get('/order-sum', (req, res) => {

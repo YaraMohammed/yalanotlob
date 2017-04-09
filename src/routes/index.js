@@ -122,9 +122,19 @@ post((req, res) => {
 		req.body['user-name'],
 		req.body['user-email'],
 		req.body['user-pass'],
-		''
+		req.body['user-pass-conf'],
+		'',
+		function (err) {
+			if(!err)
+			{
+				res.redirect('/login');
+			}
+			else
+			{
+				res.redirect('/register');
+			}
+		}
 	);
-	res.redirect('/login');
 });
 
 router.route('/forgot-pass').

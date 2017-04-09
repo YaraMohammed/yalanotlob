@@ -81,9 +81,12 @@ router.get('/login/facebook', passport.authenticate('facebook', { scope : 'email
 // handle the callback after facebook has authenticated the user
 router.get('/login/facebook/callback',
 	passport.authenticate('facebook', {
-		successRedirect: '/',
+		session: false ,
 		failureRedirect: '/login'
-	})
+	}),function(req,res){
+		res.cookie('token', req.user);
+		res.redirect('/')
+	}
 );
 
 // route for google authentication and login
@@ -97,9 +100,12 @@ router.get('/login/google', passport.authenticate('google', {
 // handle the callback after google has authenticated the user
 router.get('/login/google/callback',
 	passport.authenticate('google', {
-		successRedirect: '/',
+		session: false,
 		failureRedirect: '/login'
-	})
+	}),function(req,res){
+		res.cookie('token', req.user);
+		res.redirect('/')
+	}
 );
 
 router.route('/register').

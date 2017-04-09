@@ -163,9 +163,19 @@ post((req,res) =>{
 });
 
 
-router.get('/groups', (req, res) => {
+router.route('/groups').
+get((req, res) => {
 	res.render('user/groups');
+}).
+post((req, res) =>{
+	console.log(req.body);
+	user.createGroup(
+		res.locals.user._id,
+		req.body['add-group']
+	);
+	res.redirect('groups');
 });
+
 
 router.get('/orders', (req, res) => {
 	order.listOrders(res.locals.user._id, res.locals.user.orders, (err, data) => {

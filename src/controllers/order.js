@@ -108,7 +108,13 @@ module.exports = {
 			}
 			else
 			{
-				order.requests[userEmail] = 'accepted';
+				var criteria = 'requests.'+userEmail;
+				var oReq = {};
+				oReq[criteria] = 'accepted';
+				console.log(oReq);
+				Order.update({'_id': orderID},{$set:oReq}, (err) => {
+					console.log(err);
+				});
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
 					console.log(err);
@@ -183,6 +189,19 @@ module.exports = {
 		limit(5).
 		sort({createdAt: -1});
 	},
+
+	// list all user orders
+	listOrders: function (userEmail, cb)
+	{
+		Order.find({'owner': userEmail},function (err, data) {
+			if(!err)
+			{
+				cb(null, data);
+			}
+			else cb(err);
+		});
+	},
+
 	// lists friends activity
 	friendsActivity: function(friendsEmails) {
 		throw 'Not yet implemented';

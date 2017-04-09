@@ -138,7 +138,9 @@ router.get('/groups', (req, res) => {
 });
 
 router.get('/orders', (req, res) => {
-	res.render('user/orders');
+	res.listOrders(res.locals.user._id, (err, data) => {
+		res.render('user/orders', {orders: data});
+	});
 });
 
 router.route('/order/:orderID').
@@ -167,7 +169,7 @@ post((req, res) => {
 
 router.get('/order/:orderID/accept', (req, res) => {
 	order.accept(res.locals.user._id, req.params.orderID);
-	res.send();
+	res.redirect('/order/'+req.params.orderID);
 });
 
 router.route('/order-new').

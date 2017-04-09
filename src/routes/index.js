@@ -41,7 +41,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
 	if (res.locals.user) {
-		order.latestOrders(res.locals.user._id, (orders) => {
+		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
 			res.render('user/index');
 		});
@@ -138,7 +138,7 @@ router.get('/groups', (req, res) => {
 });
 
 router.get('/orders', (req, res) => {
-	res.listOrders(res.locals.user._id, (err, data) => {
+	order.listOrders(res.locals.user._id, res.locals.user.orders, (err, data) => {
 		res.render('user/orders', {orders: data});
 	});
 });

@@ -108,10 +108,14 @@ module.exports = {
 		var groupCriteria =  'groups.'+groupName;
 		var q = {_id: userEmail};
 		q[groupCriteria] = {$exists: true};
+
+		// var criteria = 'requests.'+userEmail;
+		var group = {};
+		group['groups.'+groupName] = [];
 		userModel.findOne(q, function(err, data) {
 			if (data == null){
 				//  add friend in user friends list
-				userModel.update({_id: userEmail},{$set:{groups:{groupName:[]}}}, function(err, data) {
+				userModel.update({_id: userEmail},{$set:group}, function(err, data) {
 					if (err) throw err;
 					console.log(data);
 				});

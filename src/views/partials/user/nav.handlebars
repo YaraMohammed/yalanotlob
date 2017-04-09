@@ -11,7 +11,14 @@
 	    </div>
 	    <ul>
 		{{#each orderRequests}}
-	        <li>{{owner}} has invited you to his order <a href="/order/{{_id}}/accept">accept</a></li>
+	        <li>
+				{{owner}} has invited you to his order
+				{{#ifEq requests "waiting"}}
+				<a href="/order/{{_id}}/accept">accept</a>
+				{{else}}
+				accepted
+				{{/ifEq}}
+			</li>
 		{{/each}}
 		</ul>
 	    <div>

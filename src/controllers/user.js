@@ -35,6 +35,10 @@ module.exports = {
 
 	// user login
 	token: function(userEmail, password,cb) {
+		if (!password) {
+			cb(null);
+			return;
+		}
 		userModel.findOne({'_id': userEmail , 'password': password},function (err, data) {
 			if(data != null){
 				var token = jwt.sign({ '_id': userEmail }, 'secret', { algorithm: 'HS256'});

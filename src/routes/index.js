@@ -6,6 +6,12 @@ require('../controllers/auth');
 var user = require('../controllers/user');
 var order = require('../controllers/order');
 var cookieParser = require('cookie-parser');
+var socket = require('../controllers/sio');
+
+/*//////////////// Try Socket
+var data = {"type":"orderJoinRequest","sender":"Yara"}
+socket.sendNotification(data)
+///////////////*/
 
 /* VARs */
 var router = express.Router();

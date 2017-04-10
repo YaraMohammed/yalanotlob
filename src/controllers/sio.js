@@ -6,9 +6,19 @@ module.exports = {
 
 		sio.on('connection', (sock) => {
 			console.log("connected")
-			// throw 'Not yet implemented';
+			//Add listener to emited events here
+
+			sock.on('confirm',function(data){
+			console.log(data);
+			});
+
 		});
 	},
+
+	sendNotification: function(notification){
+		sio.emit('notification', notification);
+	},
+
 	broadcast: function(key, value) {
 		throw 'Not yet implemented';
 	}

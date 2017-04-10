@@ -7,8 +7,11 @@
   socket.on('notification', function(data){
   	console.log(data.type);
   	console.log(data);
-  	socket.emit('confirm','notificationRecieved')
+  	socket.emit('confirm','notificationRecieved');
   });
 
-  socket.on('event', function(data){});
+  socket.on('newFriendActivity', function(data){
+  	console.log(data);
+  });
+
   socket.on('disconnect', function(){});

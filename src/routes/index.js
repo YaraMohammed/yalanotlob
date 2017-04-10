@@ -11,6 +11,9 @@ var socket = require('../controllers/sio');
 /*//////////////// Try Socket
 var data = {"type":"orderJoinRequest","sender":"Yara"}
 socket.sendNotification(data)
+
+var data = {"_id":"sender","orderFor":"Breakfast","resturant":"Rosto"}
+socket.newFriendActivity(data)
 ///////////////*/
 
 /* VARs */

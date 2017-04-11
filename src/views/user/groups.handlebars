@@ -1,6 +1,13 @@
 {{> user/nav}}
 <div>
     <h2>My Groups</h2>
+    <form method="post">
+        <div>
+            <label>Your Group Name</label>
+            <input type="text" name="add-group">
+            <input type="submit" value="Add Group">
+        </div>
+    </form>
     {{#eachKey user.groups}}
     <div>
         <a href="/group/{{.}}">{{.}}</a>
@@ -8,9 +15,4 @@
 		<a href="/group/{{.}}/delete">Delete</a>
     </div>
     {{/eachKey}}
-    <!-- <div>
-        \{{groups}}
-		<a href="#">Add Friend</a>
-		<a href="#">Delete</a>
-    </div> -->
 </div>

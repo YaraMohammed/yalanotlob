@@ -25,13 +25,6 @@ var router = express.Router();
 router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
 	res.locals.helpers = {
-		ifEq: function(x1, x2, options) {
-			if (x1 == x2) {
-				return options.fn(this);
-			} else {
-				return options.inverse(this);
-			}
-		},
 		eachKey: function(obj, options) {
 			var out = '';
 			for (var key in obj) {
@@ -67,6 +60,9 @@ router.use(cookieParser(), (req, res, next) => {
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
+	var data = {"type":"orderJoinRequest","sender":"Yara"}
+	var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ]
+	socket.sendJoinReq(data,invited)
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
@@ -185,7 +181,7 @@ router.get('/user/:friendID',(req, res) =>{
 });
 
 router.get('/user/:friendID/delete', (req, res) => {
-	user.removeFriend(res.locals.user, req.params.friendID);
+	user.removeFriend(res.locals.user._id, req.params.friendID);
 	res.redirect('/friends');
 });
 
@@ -233,7 +229,7 @@ post((req, res) => {
 		// TODO callback function
 		res.redirect('/groups');
 	} else if(req.body['group-add-friend-submit']) {
-		user.addToGroup(res.locals.user, req.params.groupID, req.body['group-add-friend'], function() {
+		user.addToGroup(res.locals.user._id, req.params.groupID, req.body['group-add-friend'], function() {
 			res.redirect('/group/'+req.params.groupID);
 		});
 	}
@@ -278,12 +274,6 @@ post((req, res) => {
 			});
 		}
 	);
-});
-
-router.get('/order/:orderID/:itemID/delete', (req, res) => {
-	order.deleteItem(res.locals.user._id, req.params.orderID, req.params.itemID, () => {
-		res.redirect('/order/'+req.params.orderID);
-	});
 });
 
 router.get('/order/:orderID/accept', (req, res) => {

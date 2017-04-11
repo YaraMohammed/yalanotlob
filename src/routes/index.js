@@ -10,6 +10,8 @@ var socket = require('../controllers/sio');
 
 /*//////////////// Try Socket
 var data = {"type":"orderJoinRequest","sender":"Yara"}
+var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@yahoo.com' ]
+socket.sendJoinReq(data,invited)
 socket.sendNotification(data)
 
 var data = {"_id":"sender","orderFor":"Breakfast","resturant":"Rosto"}

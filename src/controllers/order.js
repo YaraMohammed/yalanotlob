@@ -1,5 +1,6 @@
 var Order = require('../models/order');
 var User = require('../models/user');
+var socket = require('./sio');
 
 
 module.exports = {

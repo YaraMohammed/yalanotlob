@@ -73,15 +73,15 @@ module.exports = {
 	},
 
 	// add new friend
-	addFriend: function(userEmail, friendEmail) {
+	addFriend: function(userEmail, friendEmail,cb) {
 		if(userEmail == friendEmail)
 		{
-			console.log('You can not add yourself');
+			cb('You can not add yourself');
 		}
 		else{
 			// check if friend email exist
 			userModel.findById(friendEmail, function(err, data) {
-				if (err || !data) console.log(err);
+				if (err || !data) cb(err);
 				// check if the friend already added
 				else
 				{
@@ -89,11 +89,11 @@ module.exports = {
 						if (data == null){
 							//  add friend in user friends list
 							userModel.findOneAndUpdate({ _id: userEmail },{$addToSet: { friends: friendEmail }} , function(err, data) {
-								if (err) throw err;
-								console.log(data);
+								if (err) cb(err);
+								cb(null,data);
 							});
 						}else{
-							console.log('Friend Already Exists');
+							cb('Friend Already Exists');
 						}
 					});
 				}

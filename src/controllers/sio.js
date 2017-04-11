@@ -12,7 +12,15 @@ module.exports = {
 			//Add listener to emited events here
 
 			sock.on('token', function(token){
-				connections[user.userEmail(token)] = sock;
+				var arr = Object.keys(connections);
+				if(!arr.includes(user.userEmail(token))){
+					connections[user.userEmail(token)] = []
+					connections[user.userEmail(token)].push(sock)
+				}
+				else{
+					connections[user.userEmail(token)].push(sock);
+				}
+				console.log(connections)
 			})
 
 			sock.on('confirm',function(data) {

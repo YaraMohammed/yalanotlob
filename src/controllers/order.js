@@ -13,7 +13,7 @@ module.exports = {
 		{
 
 			friend = new Buffer(friend).toString('base64');
-			User.findOne({'_id': new Buffer(friend, 'base64').toString('ascii')},function (err , data)
+			User.findOne({'friends': {$in: new Buffer(friend, 'base64').toString('ascii')}},function (err , data)
 			{
 				if(data != null)
 				{

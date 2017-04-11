@@ -38,9 +38,9 @@ router.use(cookieParser(), (req, res, next) => {
 	if (req.cookies.token) {
 		var email = user.userEmail(req.cookies.token);
 		user.get(email, (user) => {
-			res.locals.user = user;
 			// list all notifications
 			if (user) {
+				res.locals.user = user;
 				order.getOrderRequests(email, user.orderRequests, (data) => {
 					res.locals.orderRequests = data;
 					next();
@@ -104,7 +104,7 @@ router.get('/login/facebook/callback',
 		failureRedirect: '/login'
 	}),function(req,res){
 		res.cookie('token', req.user);
-		res.redirect('/')
+		res.redirect('/');
 	}
 );
 
@@ -123,7 +123,7 @@ router.get('/login/google/callback',
 		failureRedirect: '/login'
 	}),function(req,res){
 		res.cookie('token', req.user);
-		res.redirect('/')
+		res.redirect('/');
 	}
 );
 
@@ -168,9 +168,13 @@ router.get('/profile', (req, res) => {
 	res.render('user/profile');
 });
 
+
 router.route('/friends').
 get((req, res) =>{
-	res.render('user/friends');
+	user.listFriends(res.locals.user.friends,(err,data) =>
+	{
+		res.render('user/friends', {friends:data});
+	});
 }).
 post((req,res) =>{
 	console.log(req.body);

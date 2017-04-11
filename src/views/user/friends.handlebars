@@ -2,6 +2,14 @@
 <h1>Friends</h1>
 <form method="post">
 	<div>
+			<ul>
+			{{#each friends}}
+					<li><a href="/user/{{_id}}">{{name}}</a></li>
+			{{/each}}
+			</ul>
+	</div>
+
+	<div>
 		<label>Add Friend</label>
 		<input type="text" name="add-friend">
 		<input type="submit" value="Add">

@@ -74,25 +74,31 @@ module.exports = {
 
 	// add new friend
 	addFriend: function(userEmail, friendEmail) {
-		// check if friend email exist
-		userModel.findById(friendEmail, function(err, data) {
-			if (err || !data) console.log(err);
-			// check if the friend already added
-			else
-			{
-				userModel.findOne({ _id: userEmail, friends: friendEmail}, function(err, data) {
-					if (data == null){
-						//  add friend in user friends list
-						userModel.findOneAndUpdate({ _id: userEmail },{$addToSet: { friends: friendEmail }} , function(err, data) {
-							if (err) throw err;
-							console.log(data);
-						});
-					}else{
-						console.log('Friend Already Exists');
-					}
-				});
-			}
-		});
+		if(userEmail == friendEmail)
+		{
+			console.log('You can not add yourself');
+		}
+		else{
+			// check if friend email exist
+			userModel.findById(friendEmail, function(err, data) {
+				if (err || !data) console.log(err);
+				// check if the friend already added
+				else
+				{
+					userModel.findOne({ _id: userEmail, friends: friendEmail}, function(err, data) {
+						if (data == null){
+							//  add friend in user friends list
+							userModel.findOneAndUpdate({ _id: userEmail },{$addToSet: { friends: friendEmail }} , function(err, data) {
+								if (err) throw err;
+								console.log(data);
+							});
+						}else{
+							console.log('Friend Already Exists');
+						}
+					});
+				}
+			});
+		}
 	},
 
 	// remove friend
@@ -154,13 +160,15 @@ module.exports = {
 	},
 
 	// list all user friends
-	listFriends: function(userEmail) {
-		console.log(userEmail)
-		userModel.findOne({ _id: userEmail}, function(err, data) {
-			if(err)
-				throw err
-			console.log(data.friends)
-			
-		})
+	listFriends: function(friends,cb) {
+		userModel.find({'_id':{$in:friends}},function (err,data) {
+			if(!err)
+			{
+				cb(null,data);
+			}
+			else{
+				cb(err);
+			}
+		});
 	}
 };

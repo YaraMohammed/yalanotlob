@@ -14,7 +14,11 @@
 	        <li>
 				{{owner}} has invited you to his order
 				{{#ifEq requests "waiting"}}
+				{{#ifEq status "waiting"}}
 				<a href="/order/{{_id}}/accept">accept</a>
+				{{else}}
+				finished
+				{{/ifEq}}
 				{{else}}
 				accepted
 				{{/ifEq}}

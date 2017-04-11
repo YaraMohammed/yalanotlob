@@ -20,7 +20,7 @@ module.exports = {
 				else{
 					connections[user.userEmail(token)].push(sock);
 				}
-				console.log(connections)
+				// console.log(connections)
 			})
 
 			sock.on('confirm',function(data) {
@@ -34,7 +34,8 @@ module.exports = {
 		var arr = Object.keys(connections);
 		for (var friend in invited){
 			if(arr.includes(invited[friend]))
-				connections[invited[friend]].emit('notification', notification);
+				for(var sock in connections[invited[friend]])
+					connections[invited[friend]][sock].emit('notification', notification);
 	}
 	},
 

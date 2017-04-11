@@ -130,10 +130,14 @@ module.exports = {
 		var groupCriteria =  'groups.'+groupName;
 		var q = {_id: userEmail};
 		q[groupCriteria] = {$exists: true};
+		console.log(q);
 		userModel.findOne(q, function(err, data) {
 			if (data != null){
 				//  add friend in user friends list
-				userModel.update({_id: userEmail},{$unset:{groupCriteria:[]}}, function(err, data) {
+				var q = {};
+				q['groups.'+groupName] = [];
+				console.log(q);
+				userModel.update({_id: userEmail},{$unset: q}, function(err, data) {
 					if (err) throw err;
 					console.log(data);
 				});
@@ -160,7 +164,7 @@ module.exports = {
 			if(err)
 				throw err
 			console.log(data.friends)
-			
+
 		})
 	}
 };

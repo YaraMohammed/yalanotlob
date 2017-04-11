@@ -23,13 +23,12 @@ var router = express.Router();
 router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
 	res.locals.helpers = {
-		ifEq: function(x1, x2, options) {
-			console.log(x1, x2);
-			if (x1 == x2) {
-				return options.fn(this);
-			} else {
-				return options.inverse(this);
+		eachKey: function(obj, options) {
+			var out = '';
+			for (var key in obj) {
+				out += options.fn(key);
 			}
+			return out;
 		}
 	};
 	// allow remote control
@@ -181,7 +180,6 @@ post((req,res) =>{
 	res.redirect('friends');
 });
 
-
 router.route('/groups').
 get((req, res) => {
 	res.render('user/groups');
@@ -195,6 +193,14 @@ post((req, res) =>{
 	res.redirect('groups');
 });
 
+router.get('/group/:groupID', (req, res) => {
+	res.render('user/group', {groupID: req.params.groupID});
+});
+
+router.get('/group/:groupID/delete', (req, res) => {
+	user.deleteGroup(res.locals.user._id, req.params.groupID);
+	res.redirect('/groups');
+});
 
 router.get('/orders', (req, res) => {
 	order.listOrders(res.locals.user._id, res.locals.user.orders, (err, data) => {

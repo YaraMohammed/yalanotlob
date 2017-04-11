@@ -1,4 +1,4 @@
 var server = {
-		'host': 'localhost',
-		'port': 8888
-	}
+	'host': 'localhost',
+	'port': 8888
+};

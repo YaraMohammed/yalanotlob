@@ -24,8 +24,6 @@ app.use(passport.initialize());
 app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/index'));
 
-
-
 server.listen(config.app.port, () => {
 	console.log('[  OK  ] listening on :' + config.app.port);
 });

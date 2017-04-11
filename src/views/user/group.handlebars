@@ -1,0 +1,38 @@
+{{> user/nav}}
+<div>
+    <h2>My Groups</h2>
+    {{#eachKey user.groups}}
+    <div>
+        <a href="/group/{{.}}">{{.}}</a>
+		<a href="/group/{{.}}">Add Friend</a>
+		<a href="/group/{{.}}/delete">Delete</a>
+    </div>
+    {{/eachKey}}
+    <!-- <div>
+        \{{groups}}
+		<a href="#">Add Friend</a>
+		<a href="#">Delete</a>
+    </div> -->
+</div>
+<div>
+    <h2>\{{group.name}}</h2>
+    <div>
+		<form method="post">
+			<div>
+				<label>Your Friend Name</label>
+				<input type="text" name="group-add-friend">
+				<input type="submit" value="Add">
+			</div>
+		</form>
+		<div>
+		<form method="post">
+			<div>
+				<label>Your Group Name</label>
+				<input type="text" name="add-group">
+				<input type="submit" value="Add Group">
+			</div>
+        \{{group.friends}}
+				<br>
+				\{{group.groups}}
+    </div>
+</div>

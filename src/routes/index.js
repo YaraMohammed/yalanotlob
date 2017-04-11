@@ -176,7 +176,7 @@ router.get('/user/:friendID',(req, res) =>{
 });
 
 router.get('/user/:friendID/delete', (req, res) => {
-	user.removeFriend(res.locals.user._id, req.params.friendID);
+	user.removeFriend(res.locals.user, req.params.friendID);
 	res.redirect('/friends');
 });
 
@@ -224,7 +224,7 @@ post((req, res) => {
 		// TODO callback function
 		res.redirect('/groups');
 	} else if(req.body['group-add-friend-submit']) {
-		user.addToGroup(res.locals.user._id, req.params.groupID, req.body['group-add-friend'], function() {
+		user.addToGroup(res.locals.user, req.params.groupID, req.body['group-add-friend'], function() {
 			res.redirect('/group/'+req.params.groupID);
 		});
 	}
@@ -233,6 +233,12 @@ post((req, res) => {
 router.get('/group/:groupID/delete', (req, res) => {
 	user.deleteGroup(res.locals.user._id, req.params.groupID);
 	res.redirect('/groups');
+});
+
+router.get('/group/:groupID/:friendID/remove', (req, res) => {
+	user.removeFromGroup(res.locals.user._id, req.params.groupID, req.params.friendID, () => {
+		res.redirect('/group/'+req.params.groupID);
+	});
 });
 
 router.get('/orders', (req, res) => {

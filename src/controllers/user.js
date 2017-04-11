@@ -102,11 +102,14 @@ module.exports = {
 	},
 
 	// remove friend
-	removeFriend: function(userEmail, friendEmail) {
-		userModel.findOneAndUpdate({ _id: userEmail }, { $pull: { friends: friendEmail } }, function(err, data) {
+	removeFriend: function(user, friendEmail) {
+		userModel.findOneAndUpdate({ _id: user._id }, { $pull: { friends: friendEmail } }, function(err, data) {
 			if (err) throw err;
 			console.log(data);
 		});
+		for (var group in user.groups) {
+			this.removeFromGroup(user._id, group, friendEmail, () => {});
+		}
 	},
 
 	// create new group
@@ -154,17 +157,26 @@ module.exports = {
 	},
 
 	// add new member to group
-	addToGroup: function(userEmail, groupName, friendEmail, cb) {
+	addToGroup: function(user, groupName, friendEmail, cb) {
+		if (user.friends.indexOf(friendEmail) == -1 || friendEmail == user._id) {
+			console.log('WRONG');
+			cb('Cannot add user to group');
+			return;
+		}
 		var q = {};
 		q['groups.'+groupName] = friendEmail;
-		userModel.findOneAndUpdate({'_id': userEmail}, {$addToSet: q}, (err) => {
+		userModel.findOneAndUpdate({'_id': user._id}, {$addToSet: q}, (err) => {
 			cb(err);
 		});
 	},
 
 	// remove member from group
-	removeFromGroup: function(userEmail, groupName, friendEmail) {
-		throw 'Not yet implemented';
+	removeFromGroup: function(userEmail, groupName, friendEmail, cb) {
+		var q = {};
+		q['groups.'+groupName] = friendEmail;
+		userModel.findOneAndUpdate({'_id': userEmail}, {$pull: q}, (err) => {
+			cb(err);
+		});
 	},
 
 	// list all user friends

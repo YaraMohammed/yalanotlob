@@ -5,11 +5,11 @@ module.exports = {
 		sio = sioNew;
 
 		sio.on('connection', (sock) => {
-			console.log("connected");
+			console.log('connected');
 			//Add listener to emited events here
 
-			sock.on('confirm',function(data){
-			console.log(data);
+			sock.on('confirm',function(data) {
+				console.log(data);
 			});
 
 		});
@@ -21,9 +21,5 @@ module.exports = {
 
 	newFriendActivity: function(data){
 		sio.emit('newFriendActivity', data);
-	},
-
-	broadcast: function(key, value) {
-		throw 'Not yet implemented';
 	}
 };

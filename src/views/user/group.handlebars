@@ -27,6 +27,8 @@
 			</div>
 		</form>
 		<div>
-            {{groupMembers}}
+            {{#each groupMembers}}
+            {{.}} <a href="/group/{{@root.groupID}}/{{.}}/remove">remove</a><br>
+            {{/each}}
     </div>
 </div>

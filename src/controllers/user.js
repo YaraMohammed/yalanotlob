@@ -17,14 +17,25 @@ module.exports = {
 				imageUrl: imageUrl,
 				groups: {}
 			});
-			newUser.save(function(err,data){
-				if(!err){
-					console.log(data);
-					cb(null);
-				} else {
-					console.log(err);
-					cb(err);
+			userModel.findOne({'_id': userEmail}, function (err, data) {
+				if(!data)
+				{
+					newUser.save(function(err,data){
+						if(!err){
+							console.log(data);
+							cb(null);
+						} else {
+							console.log(err);
+							cb(err);
+						}
+					});
 				}
+				else
+				{
+					console.log('User Already Exist');
+					cb('User Already Exist');
+				}
+
 			});
 		}else
 		{

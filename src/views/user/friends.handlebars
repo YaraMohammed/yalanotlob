@@ -4,7 +4,10 @@
 	<div>
 			<ul>
 			{{#each friends}}
-					<li><a href="/user/{{_id}}">{{name}}</a></li>
+					<li>
+						<a href="/user/{{_id}}">{{name}}</a>
+						<a href="/user/{{_id}}/delete">Delete</a>
+				</li>
 			{{/each}}
 			</ul>
 	</div>

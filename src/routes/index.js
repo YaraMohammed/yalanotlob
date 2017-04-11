@@ -168,6 +168,18 @@ router.get('/profile', (req, res) => {
 });
 
 
+
+router.get('/user/:friendID',(req, res) =>{
+	user.get(req.params.friendID,function (friend) {
+		res.render('user/friend-profile',{friend: friend});
+	});
+});
+
+router.get('/user/:friendID/delete', (req, res) => {
+	user.removeFriend(res.locals.user._id, req.params.friendID);
+	res.redirect('/friends');
+});
+
 router.route('/friends').
 get((req, res) =>{
 	user.listFriends(res.locals.user.friends,(err,data) =>
@@ -175,13 +187,16 @@ get((req, res) =>{
 		res.render('user/friends', {friends:data});
 	});
 }).
+
 post((req,res) =>{
 	console.log(req.body);
 	user.addFriend(
 		res.locals.user._id,
-		req.body['add-friend']
+		req.body['add-friend'],
+		function (err,data) {
+			res.redirect('/friends');
+		}
 	);
-	res.redirect('/friends');
 });
 
 router.route('/groups').

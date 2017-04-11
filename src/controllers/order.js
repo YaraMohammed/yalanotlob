@@ -156,6 +156,37 @@ module.exports = {
 	);
 	},
 
+	deleteItem: function (userEmail, orderID, itemID, cb) {
+		Order.findOne({'_id': orderID,'orders._id': itemID},function (err,data) {
+			if(!err)
+			{
+				var item = null;
+				for (var i of data.orders) {
+					if (i._id == itemID) {
+						item = i;
+						break;
+					}
+				}
+				if(item && item.owner == userEmail)
+				{
+					console.log(userEmail);
+					Order.update({'owner':userEmail},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
+						cb(null,data);
+
+					});
+				} else {
+					cb('Cannot delete item');
+				}
+			}
+			else
+			{
+				cb(err);
+			}
+		});
+
+
+	},
+
 	// change order status to finished
 	finish: function(userEmail, orderID)
 	{

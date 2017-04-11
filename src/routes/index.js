@@ -265,6 +265,12 @@ post((req, res) => {
 	);
 });
 
+router.get('/order/:orderID/:itemID/delete', (req, res) => {
+	order.deleteItem(res.locals.user._id, req.params.orderID, req.params.itemID, () => {
+		res.redirect('/order/'+req.params.orderID);
+	});
+});
+
 router.get('/order/:orderID/accept', (req, res) => {
 	order.accept(res.locals.user._id, req.params.orderID);
 	res.redirect('/order/'+req.params.orderID);

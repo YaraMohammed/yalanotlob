@@ -154,8 +154,12 @@ module.exports = {
 	},
 
 	// add new member to group
-	addToGroup: function(userEmail, groupName, friendEmail) {
-		throw 'Not yet implemented';
+	addToGroup: function(userEmail, groupName, friendEmail, cb) {
+		var q = {};
+		q['groups.'+groupName] = friendEmail;
+		userModel.findOneAndUpdate({'_id': userEmail}, {$addToSet: q}, (err) => {
+			cb(err);
+		});
 	},
 
 	// remove member from group

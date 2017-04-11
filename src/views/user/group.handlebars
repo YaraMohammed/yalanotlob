@@ -5,7 +5,7 @@
         <div>
             <label>Your Group Name</label>
             <input type="text" name="add-group">
-            <input type="submit" value="Add Group">
+            <input type="submit" name="add-group-submit" value="Add Group">
         </div>
     </form>
     {{#eachKey user.groups}}
@@ -17,16 +17,16 @@
     {{/eachKey}}
 </div>
 <div>
-    <h2>\{{group.name}}</h2>
+    <h2>{{groupID}}</h2>
     <div>
 		<form method="post">
 			<div>
 				<label>Your Friend Name</label>
 				<input type="text" name="group-add-friend">
-				<input type="submit" value="Add">
+				<input type="submit" name="group-add-friend-submit" value="Add">
 			</div>
 		</form>
 		<div>
-            \{{group.friends}}
+            {{groupMembers}}
     </div>
 </div>

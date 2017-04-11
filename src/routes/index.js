@@ -181,7 +181,7 @@ post((req,res) =>{
 		res.locals.user._id,
 		req.body['add-friend']
 	);
-	res.redirect('friends');
+	res.redirect('/friends');
 });
 
 router.route('/groups').
@@ -189,16 +189,30 @@ get((req, res) => {
 	res.render('user/groups');
 }).
 post((req, res) =>{
-	console.log(req.body);
 	user.createGroup(
 		res.locals.user._id,
 		req.body['add-group']
 	);
-	res.redirect('groups');
+	res.redirect('/groups');
 });
 
-router.get('/group/:groupID', (req, res) => {
-	res.render('user/group', {groupID: req.params.groupID});
+router.route('/group/:groupID').
+get((req, res) => {
+	res.render('user/group', {groupID: req.params.groupID, groupMembers: res.locals.user.groups[req.params.groupID]});
+}).
+post((req, res) => {
+	if (req.body['add-group-submit']) {
+		user.createGroup(
+			res.locals.user._id,
+			req.body['add-group']
+		);
+		// TODO callback function
+		res.redirect('/groups');
+	} else if(req.body['group-add-friend-submit']) {
+		user.addToGroup(res.locals.user._id, req.params.groupID, req.body['group-add-friend'], function() {
+			res.redirect('/group/'+req.params.groupID);
+		});
+	}
 });
 
 router.get('/group/:groupID/delete', (req, res) => {

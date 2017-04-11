@@ -23,6 +23,13 @@ var router = express.Router();
 router.use(cookieParser(), (req, res, next) => {
 	res.locals.title = 'Yala Notlob';
 	res.locals.helpers = {
+		ifEq: function(x1, x2, options) {
+			if (x1 == x2) {
+				return options.fn(this);
+			} else {
+				return options.inverse(this);
+			}
+		},
 		eachKey: function(obj, options) {
 			var out = '';
 			for (var key in obj) {

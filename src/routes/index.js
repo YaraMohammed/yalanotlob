@@ -170,7 +170,9 @@ router.get('/profile', (req, res) => {
 
 
 router.get('/user/:friendID',(req, res) =>{
-	res.render('user/friends',{friendID: req.params.friendID});
+	user.get(req.params.friendID,function (friend) {
+		res.render('user/friend-profile',{friend: friend});
+	});
 });
 
 router.get('/user/:friendID/delete', (req, res) => {
@@ -192,7 +194,7 @@ post((req,res) =>{
 		res.locals.user._id,
 		req.body['add-friend'],
 		function (err,data) {
-			res.redirect('friends');	
+			res.redirect('friends');
 		}
 	);
 });

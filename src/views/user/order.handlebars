@@ -22,7 +22,7 @@ Status: {{order.status}}<br>
 			<td>{{amount}}</td>
 			<td>{{price}}</td>
 			<td>{{comment}}</td>
-			<td><a href="#">Delete</a></td>
+			<td><a href="/order/{{{@root.order._id}}}/{{_id}}/delete">Delete</a></td>
 		</tr>
 	{{/each}}
 	</tbody>

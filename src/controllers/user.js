@@ -163,8 +163,12 @@ module.exports = {
 	},
 
 	// remove member from group
-	removeFromGroup: function(userEmail, groupName, friendEmail) {
-		throw 'Not yet implemented';
+	removeFromGroup: function(userEmail, groupName, friendEmail, cb) {
+		var q = {};
+		q['groups.'+groupName] = friendEmail;
+		userModel.findOneAndUpdate({'_id': userEmail}, {$pull: q}, (err) => {
+			cb(err);
+		});
 	},
 
 	// list all user friends

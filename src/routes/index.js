@@ -235,6 +235,12 @@ router.get('/group/:groupID/delete', (req, res) => {
 	res.redirect('/groups');
 });
 
+router.get('/group/:groupID/:friendID/remove', (req, res) => {
+	user.removeFromGroup(res.locals.user._id, req.params.groupID, req.params.friendID, () => {
+		res.redirect('/group/'+req.params.groupID);
+	});
+});
+
 router.get('/orders', (req, res) => {
 	order.listOrders(res.locals.user._id, res.locals.user.orders, (err, data) => {
 		res.render('user/orders', {orders: data});

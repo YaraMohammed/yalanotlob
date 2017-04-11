@@ -20,12 +20,21 @@ module.exports = {
 				else{
 					connections[user.userEmail(token)].push(sock);
 				}
-				// console.log(connections)
 			})
 
 			sock.on('confirm',function(data) {
 				console.log(data);
 			});
+
+			sock.on('disconnect', function(){
+				var arr = Object.keys(connections);
+				for(var email in arr){
+					if(connections[arr[email]].includes(sock)){
+						var i = connections[arr[email]].indexOf(sock);
+						connections[arr[email]].splice(i, 1);
+					}
+				}
+			})
 
 		});
 	},

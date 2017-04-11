@@ -158,6 +158,8 @@ module.exports = {
 	},
 
 	deleteItem: function (userEmail, orderID, itemID, cb) {
+		console.log('itemId',itemID);
+
 		Order.findOne({'_id': orderID,'orders._id': itemID},function (err,data) {
 			if(!err)
 			{
@@ -168,10 +170,11 @@ module.exports = {
 						break;
 					}
 				}
+				console.log(item,userEmail);
 				if(item && item.owner == userEmail)
 				{
-					console.log(userEmail);
-					Order.update({'owner':userEmail},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
+					Order.update({},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
+						console.log(err);
 						cb(null,data);
 
 					});

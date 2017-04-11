@@ -313,6 +313,16 @@ post((req, res) => {
 	);
 });
 
+router.get('/order/:orderID/finish',(req, res) => {
+	order.finish(res.locals.user._id,req.params.orderID);
+	res.redirect('/order/'+req.params.orderID);
+});
+
+router.get('/order/:orderID/cancel',(req, res) => {
+	order.cancel(res.locals.user._id,req.params.orderID);
+	res.redirect('/orders');
+});
+
 router.get('/order-sum', (req, res) => {
 	res.render('user/order-sum');
 });

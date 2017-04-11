@@ -134,7 +134,6 @@ module.exports = {
 	// add an item to order
 	addItem: function(userEmail, orderID, item, amount, price, comment, cb)
 	{
-
 		var itoma = {
 			owner: userEmail,
 			item: item,
@@ -142,19 +141,29 @@ module.exports = {
 			price: price,
 			comment: comment
 		};
-		Order.findOneAndUpdate({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
-		{
-			if(!err)
+		Order.findOne({'_id': orderID},function (err, data) {
+			if(!err && data && data.status == 'waiting')
 			{
-				console.log(data);
+				Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
+				{
+					if(!err)
+					{
+						console.log(data);
+					}
+					else
+					{
+						console.error(err);
+					}
+					cb(err);
+				});
+
 			}
 			else
 			{
-				console.error(err);
+				cb(err);
 			}
-			cb(err);
-		}
-	);
+
+		});
 	},
 
 	deleteItem: function (userEmail, orderID, itemID, cb) {

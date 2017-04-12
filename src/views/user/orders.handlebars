@@ -22,8 +22,12 @@
 		<td>{{status}}</td>
 		<td>
 			<a href="/order/{{_id}}">View</a>
+			{{#ifEq status "waiting"}}
+			{{#ifEq owner @root.user._id}}
 			<a href="/order/{{_id}}/finish">Finish</a>
 			<a href="/order/{{_id}}/cancel">Cancel</a>
+			{{/ifEq}}
+			{{/ifEq}}
 		</td>
 	</tr>
 	{{/each}}

@@ -8,8 +8,11 @@ module.exports = {
 	create: function(user, type, restaurant, friends, menuImageUrl, cb)
 	{
 		var reqs = {};
+		var invited = [];
 		for (var friend of friends)
 		{
+			console.log(friend) 
+			// --> invited
 			if (user.friends.indexOf(friend) != -1)
 			{
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
@@ -45,6 +48,7 @@ module.exports = {
 				}
 				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
 					console.log(err);
+					//
 					cb(null, data._id);
 				});
 			}

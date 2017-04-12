@@ -1,5 +1,8 @@
 var userModel = require('../models/user');
 var jwt = require('jsonwebtoken');
+var sendmail = require('sendmail')();
+var generator = require('generate-password');
+var config = require('../config');
 
 module.exports = {
 
@@ -81,6 +84,37 @@ module.exports = {
 		} catch(e) {
 			return;
 		}
+	},
+
+	//Forget password
+	forgetPassword: function (userEmail) {
+		userModel.findOne({'_id': userEmail}, function (err, data) {
+			if(data)
+			{
+				var password = generator.generate({
+					length: 6,
+					numbers: true
+				});
+				console.log('pass',password);
+				userModel.update({'_id': data._id}, {$set: {'password': password}}, function (err) {
+					console.log(err);
+				});
+				sendmail({
+					from: ' yalaNotlob <noreply@yalaNotlob.com>',
+					to: userEmail,
+					subject: 'Reset password',
+					html: 'Your new password is '+password+'<br>'+
+					'<a href="http://'+config.app.host+':'+config.app.port+'/change-pass">Change Password</a>',
+				}, function(err, reply) {
+					console.log(err && err.stack);
+					console.dir(reply);
+				});
+			}
+			else
+			{
+				console.log(err);
+			}
+		});
 	},
 
 	// add new friend

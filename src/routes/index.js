@@ -171,8 +171,18 @@ router.route('/forgot-pass').
 get((req, res) => {
 	res.render('auth/forgot-pass');
 }).
-post(() => {
-	throw 'Not yet implemented';
+post((req, res) => {
+	user.forgetPassword(req.body['user-email']);
+	res.redirect('/login');
+});
+
+router.route('/change-pass').
+get((req, res) => {
+	res.render('auth/change-pass');
+}).
+post((req, res) => {
+	user.forgetPassword(req.body['user-email']);
+	res.redirect('/login');
 });
 
 router.get('/profile', (req, res) => {

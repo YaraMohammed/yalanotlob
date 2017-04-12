@@ -301,7 +301,7 @@ get((req, res) => {
 post((req, res) => {
 	console.log(req.body);
 	order.create(
-		res.locals.user._id,
+		res.locals.user,
 		req.body['order-type'],
 		req.body['order-restaurant'],
 		req.body['order-friends'].split(','),

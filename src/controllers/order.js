@@ -5,71 +5,58 @@ var socket = require('./sio');
 
 module.exports = {
 	// create new order functions
-	create: function(userEmail, type, restaurant, friends, menuImageUrl)
+	create: function(user, type, restaurant, friends, menuImageUrl, cb)
 	{
 		var reqs = {};
-		var i = 0;
 		for (var friend of friends)
 		{
-
-			friend = new Buffer(friend).toString('base64');
-			User.findOne({'_id': new Buffer(friend, 'base64').toString('ascii')},function (err , data)
+			if (user.friends.indexOf(friend) != -1)
 			{
-				if(data != null)
+				reqs[Buffer(friend).toString('base64')] = 'waiting';
+			}
+		}
+		console.log('Reqs', reqs);
+		var order = new Order(
+			{
+				owner: user._id,
+				type: type,
+				restaurant: restaurant,
+				requests: reqs,
+				menuImageUrl: menuImageUrl,
+				orders: [],
+				status: 'waiting'
+			}
+		);
+		order.save(function(err,data)
+		{
+			if(!err)
+			{
+				console.log(data);
+				for(var key in reqs)
 				{
-					var d = data._id;
-					console.log(d);
-					d = new Buffer(d).toString('base64');
-					console.log(d);
-					console.log(data);
-					reqs[d] = 'waiting';
-
-				}
-				else
-				{
-					console.log('Friend Email does not exist');
-
-				}
-				i++;
-				if(i == friends.length)
-				{
-					console.log('Reqs', reqs);
-					var order = new Order(
-						{
-							owner: userEmail,
-							type: type,
-							restaurant: restaurant,
-							requests: reqs,
-							menuImageUrl: menuImageUrl,
-							orders: [],
-							status: 'waiting'
-						}
-					);
-					order.save(function(err,data)
+					if(reqs.hasOwnProperty(key))
 					{
-						if(!err)
-						{
-							console.log(data);
-							for(var key in reqs)
-							{
-								if(reqs.hasOwnProperty(key))
-								{
-									var id = data._id;
-									var uid = new Buffer(key, 'base64').toString('ascii');
-									User.findOneAndUpdate({'_id':uid},{$addToSet:{'orderRequests':id}}, function(err) {
-										console.log(err);
-									});
+						var id = data._id;
+						var uid = new Buffer(key, 'base64').toString('ascii');
+						User.findOneAndUpdate({'_id': uid},{$addToSet: {'orderRequests': id}}, function(err) {
+							console.log(err);
+						});
 
-								}
-							}
-						}
+						User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': id}},function (err) {
+							console.log(err);
+						});
 
 					}
-				);
 				}
-			});
-		}
+				cb(null, data._id);
+			}
+			else
+			{
+				console.log(err);
+				cb(err);
+			}
 
+		});
 	},
 
 	// get order details
@@ -209,7 +196,8 @@ module.exports = {
 	// change order status to cancelled
 	cancel: function(userEmail, orderID)
 	{
-		Order.remove({'_id':orderID, 'owner': userEmail},function (err,data)
+
+		Order.remove({'_id':orderID, 'owner': userEmail, 'status': 'waiting'},function (err,data)
 		{
 			if(!err)
 			{

@@ -122,26 +122,33 @@ module.exports = {
 			comment: comment
 		};
 		Order.findOne({'_id': orderID},function (err, data) {
-			if(!err && data && data.status == 'waiting')
+			for(var key in data.requests)
 			{
-				Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
+				if(data.requests.hasOwnProperty(key) && new Buffer(key, 'base64').toString('ascii') == userEmail)
 				{
-					if(!err)
+					if(!err && data && data.status == 'waiting' && data.requests[key] == 'accepted')
 					{
-						console.log(data);
+						Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
+						{
+							if(!err)
+							{
+								console.log(data);
+							}
+							else
+							{
+								console.error(err);
+							}
+							cb(err);
+						});
+
 					}
 					else
 					{
-						console.error(err);
+						cb(err);
 					}
-					cb(err);
-				});
+				}
+			}
 
-			}
-			else
-			{
-				cb(err);
-			}
 
 		});
 	},

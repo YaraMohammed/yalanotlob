@@ -41,14 +41,12 @@ module.exports = {
 						User.findOneAndUpdate({'_id': uid},{$addToSet: {'orderRequests': id}}, function(err) {
 							console.log(err);
 						});
-
-						User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': id}},function (err) {
-							console.log(err);
-						});
-
 					}
 				}
-				cb(null, data._id);
+				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
+					console.log(err);
+					cb(null, data._id);
+				});
 			}
 			else
 			{
@@ -133,26 +131,33 @@ module.exports = {
 			comment: comment
 		};
 		Order.findOne({'_id': orderID},function (err, data) {
-			if(!err && data && data.status == 'waiting')
+			for(var key in data.requests)
 			{
-				Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
+				if(data.requests.hasOwnProperty(key) && new Buffer(key, 'base64').toString('ascii') == userEmail)
 				{
-					if(!err)
+					if(!err && data && data.status == 'waiting' && data.requests[key] == 'accepted')
 					{
-						console.log(data);
+						Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
+						{
+							if(!err)
+							{
+								console.log(data);
+							}
+							else
+							{
+								console.error(err);
+							}
+							cb(err);
+						});
+
 					}
 					else
 					{
-						console.error(err);
+						cb(err);
 					}
-					cb(err);
-				});
+				}
+			}
 
-			}
-			else
-			{
-				cb(err);
-			}
 
 		});
 	},
@@ -214,8 +219,13 @@ module.exports = {
 			{
 				console.log(data);
 			}
-		}
-	);
+		});
+		User.findOneAndUpdate({'orderRequests': orderID}, {$pull: {'orderRequests': orderID}}, function (err) {
+			console.log(err);
+		});
+		User.findOneAndUpdate({'orders': orderID}, {$pull: {'orders': orderID}}, function (err) {
+			console.log(err);
+		});
 	},
 
 	// lists 5 recent orders

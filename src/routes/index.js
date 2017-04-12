@@ -172,7 +172,7 @@ get((req, res) => {
 	res.render('auth/forgot-pass');
 }).
 post((req, res) => {
-	user.forgetPassword(req.body['user-email']);
+	user.forgotPassword(req.body['user-email']);
 	res.redirect('/login');
 });
 
@@ -181,7 +181,12 @@ get((req, res) => {
 	res.render('auth/change-pass');
 }).
 post((req, res) => {
-	user.forgetPassword(req.body['user-email']);
+	user.changePassword(
+		req.body['user-email'],
+		req.body['user-pass-old'],
+		req.body['user-pass'],
+		req.body['user-pass-conf']
+	);
 	res.redirect('/login');
 });
 

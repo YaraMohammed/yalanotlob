@@ -216,16 +216,26 @@ module.exports = {
 	// change order status to cancelled
 	cancel: function(userEmail, orderID)
 	{
-
-		Order.remove({'_id':orderID, 'owner': userEmail, 'status': 'waiting'},function (err,data)
-		{
-			if(!err)
+		Order.findOne({'_id': orderID}, function (err, data) {
+			if(data)
 			{
-				console.log(data);
+				for(var i = 0 ; i< Object.keys(data.requests).length ; i++)
+						{
+					User.update({'orderRequests': orderID}, {$pull: {'orderRequests': orderID, 'orders': orderID}}, function (err) {
+						console.log(err);
+					});
+				}
+				Order.remove({'_id':orderID, 'owner': userEmail, 'status': 'waiting'},function (err,data)
+				{
+					if(!err)
+					{
+						console.log(data);
+					}
+				});
 			}
-		});
-		User.findOneAndUpdate({'orderRequests': orderID}, {$pull: {'orderRequests': orderID}}, function (err) {
-			console.log(err);
+			else {
+				console.log('error',err);
+			}
 		});
 		User.findOneAndUpdate({'orders': orderID}, {$pull: {'orders': orderID}}, function (err) {
 			console.log(err);

@@ -208,8 +208,13 @@ module.exports = {
 			{
 				console.log(data);
 			}
-		}
-	);
+		});
+		User.findOneAndUpdate({'orderRequests': orderID}, {$pull: {'orderRequests': orderID}}, function (err) {
+			console.log(err);
+		});
+		User.findOneAndUpdate({'orders': orderID}, {$pull: {'orders': orderID}}, function (err) {
+			console.log(err);
+		});
 	},
 
 	// lists 5 recent orders

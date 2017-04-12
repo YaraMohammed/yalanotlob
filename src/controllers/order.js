@@ -41,14 +41,12 @@ module.exports = {
 						User.findOneAndUpdate({'_id': uid},{$addToSet: {'orderRequests': id}}, function(err) {
 							console.log(err);
 						});
-
-						User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': id}},function (err) {
-							console.log(err);
-						});
-
 					}
 				}
-				cb(null, data._id);
+				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
+					console.log(err);
+					cb(null, data._id);
+				});
 			}
 			else
 			{

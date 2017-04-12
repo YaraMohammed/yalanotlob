@@ -5,7 +5,7 @@ var socket = require('./sio');
 
 module.exports = {
 	// create new order functions
-	create: function(userEmail, type, restaurant, friends, menuImageUrl, cb)
+	create: function(userEmail, type, restaurant, friends, menuImageUrl)
 	{
 		var reqs = {};
 		var i = 0;
@@ -13,7 +13,7 @@ module.exports = {
 		{
 
 			friend = new Buffer(friend).toString('base64');
-			User.findOne({'friends': {$in: new Buffer(friend, 'base64').toString('ascii')}},function (err , data)
+			User.findOne({'_id': new Buffer(friend, 'base64').toString('ascii')},function (err , data)
 			{
 				if(data != null)
 				{
@@ -54,21 +54,14 @@ module.exports = {
 							{
 								if(reqs.hasOwnProperty(key))
 								{
-									var oid = data._id;
-									var orderOwner = data.owner;
+									var id = data._id;
 									var uid = new Buffer(key, 'base64').toString('ascii');
-									User.findOneAndUpdate({'_id':uid},{$addToSet:{'orderRequests':oid}}, function(err) {
-										console.log(err);
-									});
-									User.findOneAndUpdate({'_id': orderOwner},{$addToSet:{'orders':oid}},function (err) {
+									User.findOneAndUpdate({'_id':uid},{$addToSet:{'orderRequests':id}}, function(err) {
 										console.log(err);
 									});
 
 								}
 							}
-							cb(null, data._id);
-						} else {
-							cb(err);
 						}
 
 					}
@@ -182,7 +175,7 @@ module.exports = {
 				console.log(item,userEmail);
 				if(item && item.owner == userEmail)
 				{
-					Order.update({},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
+					Order.update({'_id': orderID},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
 						console.log(err);
 						cb(null,data);
 

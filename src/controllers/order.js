@@ -73,11 +73,22 @@ module.exports = {
 
 	// get order requests' details
 	getOrderRequests: function(userEmail, orderRequestIds, cb) {
-		Order.find({'_id': {$in: orderRequestIds}}, (err, data) => {
-			for (var id in data) {
-				data[id].requests = data[id].requests[Buffer(userEmail).toString('base64')];
+		Order.find({'_id': {$in: orderRequestIds}}, (err, orderReqs) => {
+			var owners = [];
+			for (var id in orderReqs) {
+				owners.push(orderReqs[id].owner);
+				orderReqs[id].requests = orderReqs[id].requests[Buffer(userEmail).toString('base64')];
 			}
-			cb(data);
+			User.find({'_id': {$in: owners}},function (err,users) {
+				var userNames = {};
+				for (var user of users) {
+					userNames[user._id] = user.name;
+				}
+				for (var id in orderReqs) {
+					orderReqs[id].name = userNames[orderReqs[id].owner];
+				}
+				cb(orderReqs, users);
+			});
 		});
 	},
 

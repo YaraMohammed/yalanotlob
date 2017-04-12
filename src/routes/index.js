@@ -9,12 +9,12 @@ var cookieParser = require('cookie-parser');
 var socket = require('../controllers/sio');
 
 /*//////////////// Try Socket
-var data = {"type":"orderJoinRequest","sender":"Yara"}
+var data = {'type':'orderJoinRequest','sender':'Yara'}
 var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@yahoo.com' ]
 socket.sendJoinReq(data,invited)
 socket.sendNotification(data)
 
-var data = {"_id":"sender","orderFor":"Breakfast","resturant":"Rosto"}
+var data = {'_id':'sender','orderFor':'Breakfast','resturant':'Rosto'}
 socket.newFriendActivity(data)
 ///////////////*/
 
@@ -67,9 +67,9 @@ router.use(cookieParser(), (req, res, next) => {
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
-	var data = {"type":"orderJoinRequest","sender":"Yara"}
-	var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ]
-	socket.sendJoinReq(data,invited)
+	var data = {'type':'orderJoinRequest','sender':'Yara'};
+	var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ];
+	socket.sendJoinReq(data,invited);
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
@@ -179,7 +179,13 @@ router.get('/profile', (req, res) => {
 	res.render('user/profile');
 });
 
-
+router.use((req, res, next) => {
+	if (!res.locals.user) {
+		res.redirect('/');
+	} else {
+		next();
+	}
+});
 
 router.get('/user/:friendID',(req, res) =>{
 	user.get(req.params.friendID,function (friend) {
@@ -262,7 +268,16 @@ router.get('/orders', (req, res) => {
 router.route('/order/:orderID').
 get((req, res) => {
 	order.get(res.locals.user._id, req.params.orderID, (order) => {
-		res.render('user/order', {order: order});
+		if (order &&
+			(
+				order.owner == res.locals.user._id ||
+				order.requests[Buffer(res.locals.user._id).toString('base64')] == 'accepted'
+			)
+		) {
+			res.render('user/order', {order: order});
+		} else {
+			res.redirect('/orders');
+		}
 	});
 }).
 post((req, res) => {

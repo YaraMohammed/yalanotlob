@@ -6,24 +6,24 @@
 	<a href="/profile">{{user.name}}</a>
 	<a href="/" onclick="document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 GMT'">Logout</a>
 	<div>
-	    <div>
-	        Notifications
-	    </div>
-	    <ul>
-		{{#each orderRequests}}
-	        <li>
-				{{owner}} has invited you to his order
+		<div>
+			Notifications
+		</div>
+		<ul>
+			{{#each orderRequests}}
+			<li>
+				<a href="/user/{{owner}}">{{name}}</a> has invited you to his order.
 				{{#ifEq requests "waiting"}}
 				{{#ifEq status "waiting"}}
-				<a href="/order/{{_id}}/accept">accept</a>
+				<a href="/order/{{_id}}/accept">Join</a>
 				{{else}}
-				finished
+				<a href="/order/{{_id}}">Finished</a>
 				{{/ifEq}}
 				{{else}}
-				accepted
+				<a href="/order/{{_id}}">Joined</a>
 				{{/ifEq}}
 			</li>
-		{{/each}}
+			{{/each}}
 		</ul>
 	    <div>
 	        <a href="/notifications">View all notifications</a>

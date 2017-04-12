@@ -86,8 +86,21 @@ module.exports = {
 		}
 	},
 
+	//Change Password
+	changePassword: function (userEmail, oldPass, newPass, confPass) {
+		console.log('ay 7aga');
+		userModel.findOne({'_id': userEmail}, function (err, data) {
+			if(data && newPass == confPass && data.password == oldPass)
+			{
+				userModel.update({'_id': data._id}, {$set: {'password': newPass}}, function (err) {
+					console.log(err);
+				});
+			}
+		});
+	},
+
 	//Forget password
-	forgetPassword: function (userEmail) {
+	forgotPassword: function (userEmail) {
 		userModel.findOne({'_id': userEmail}, function (err, data) {
 			if(data)
 			{

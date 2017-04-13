@@ -49,9 +49,13 @@ router.use(cookieParser(), (req, res, next) => {
 			// list all notifications
 			if (user) {
 				res.locals.user = user;
+				// TODO replace with getNotifs
 				order.getOrderRequests(email, user.orderRequests, (data) => {
 					res.locals.orderRequests = data;
-					next();
+					order.getNotifs(user, (notifs) => {
+						res.locals.notifications = notifs;
+						next();
+					});
 				});
 			} else {
 				res.cookie('token', '', {expires: new Date(0)});

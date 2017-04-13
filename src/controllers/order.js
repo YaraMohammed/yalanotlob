@@ -85,7 +85,42 @@ module.exports = {
 				for (var id in orderReqs) {
 					orderReqs[id].name = userNames[orderReqs[id].owner];
 				}
-				cb(orderReqs, users);
+				cb(orderReqs, users /*TODO do not get users here*/);
+			});
+		}).sort({createdAt: -1});
+	},
+
+	// get order notifications
+	getNotifs: function(user, cb) {
+		this.getOrderRequests(user._id, user.orderRequests, (reqs) => {
+			var notifs = [];
+			var users = [];
+			for (var req of reqs) {
+				users.push(req.owner);
+				notifs.push({
+					type: 'req',
+					user: req.owner,
+					time: req.createdAt
+				});
+			}
+			for (var orderID in user.orderAccepts) {
+				for (var acc of user.orderAccepts[orderID]) {
+					users.push(acc.user);
+					acc.type = 'acc';
+					notifs.push(acc);
+				}
+			}
+			notifs.sort((a, b) => { return a.time < b.time; });
+			User.find({'_id': {$in: users}},function (err,users) {
+				var userNames = {};
+				for (var user of users) {
+					userNames[user._id] = user.name;
+				}
+				for (var id in notifs) {
+					notifs[id].userName = userNames[notifs[id].user];
+				}
+				console.log(notifs);
+				cb(notifs);
 			});
 		});
 	},
@@ -113,6 +148,14 @@ module.exports = {
 				});
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
+					console.log(err);
+				});
+				var q = {};
+				q['orderAccepts.'+orderID] = {
+					user: userEmail,
+					time: new Date()
+				};
+				User.findOneAndUpdate({'_id': order.owner}, {$push: q}, (err) => {
 					console.log(err);
 				});
 			}

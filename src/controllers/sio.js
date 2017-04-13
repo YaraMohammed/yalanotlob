@@ -8,7 +8,6 @@ module.exports = {
 		sio = sioNew;
 
 		sio.on('connection', (sock) => {
-			console.log('connected');
 			//Add listener to emited events here
 
 			sock.on('token', function(token){

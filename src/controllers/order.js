@@ -106,6 +106,9 @@ module.exports = {
 				notifs.push({
 					type: 'req',
 					user: req.owner,
+					orderID: req._id,
+					myStatus: req.requests,
+					status: req.status,
 					time: req.createdAt
 				});
 			}
@@ -113,6 +116,7 @@ module.exports = {
 				for (var acc of user.orderAccepts[orderID]) {
 					users.push(acc.user);
 					acc.type = 'acc';
+					acc.orderID = orderID;
 					notifs.push(acc);
 				}
 			}

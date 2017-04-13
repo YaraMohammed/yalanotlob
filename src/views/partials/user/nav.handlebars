@@ -10,19 +10,25 @@
 			Notifications
 		</div>
 		<ul id='notifications'>
-			{{#each orderRequests}}
+			{{#each notifications}}
+			{{#ifEq type "req"}}
 			<li>
-				<a href="/user/{{owner}}">{{name}}</a> has invited you to his order.
-				{{#ifEq requests "waiting"}}
+				<a href="/user/{{user}}">{{userName}}</a> has invited you to his order.
+				{{#ifEq myStatus "waiting"}}
 				{{#ifEq status "waiting"}}
-				<a href="/order/{{_id}}/accept">Join</a>
+				<a href="/order/{{orderID}}/accept">Join</a>
 				{{else}}
-				<a href="/order/{{_id}}">Finished</a>
+				<a href="/order/{{orderID}}">Finished</a>
 				{{/ifEq}}
 				{{else}}
-				<a href="/order/{{_id}}">Joined</a>
+				<a href="/order/{{orderID}}">Joined</a>
 				{{/ifEq}}
 			</li>
+			{{else}}
+			<li>
+				<a href="/user/{{user}}">{{userName}}</a> has accepted invitation to <a href="/order/{{orderID}}">your order</a>.
+			</li>
+			{{/ifEq}}
 			{{/each}}
 		</ul>
 	    <div>

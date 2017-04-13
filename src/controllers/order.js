@@ -49,6 +49,7 @@ module.exports = {
 					console.log(err);
 					// send notification
 					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id}
+					console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
 					cb(null, data._id);
 				});

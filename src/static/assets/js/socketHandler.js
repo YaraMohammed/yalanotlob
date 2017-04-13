@@ -7,8 +7,8 @@ if(getCookie('token')){
   //listen to notification
   socket.on('notification', function(data){
   	// socket.emit('confirm','notificationRecieved');
-    if(data.type == 'orderJoinRequest'){
-      $('#notifications').prepend("<li><a href=/user/"+data.sender+">"+data.senderName+" </a> has invited you to his order<a href=/order/"+data.orderID+"/accept>Join</a></li>")
+    if(data.type == 'orderJoinRequest' && data.senderName != undefined){
+      $('#notifications').prepend("<li><a href=/user/"+data.sender+">"+data.senderName+" </a> has invited you to his order<a href=/order/"+data.orderID+"/accept>JoinXX</a></li>")
     }
   });
 

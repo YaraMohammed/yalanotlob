@@ -215,11 +215,14 @@ module.exports = {
 		Order.findOne({'_id': orderID}, function (err, data) {
 			if(data)
 			{
-				for(var i = 0 ; i< Object.keys(data.requests).length ; i++)
-						{
-					User.update({'orderRequests': orderID}, {$pull: {'orderRequests': orderID, 'orders': orderID}}, function (err) {
-						console.log(err);
-					});
+				if (data.requests)
+				{
+					for(var i = 0 ; i< Object.keys(data.requests).length ; i++)
+					{
+						User.update({'orderRequests': orderID}, {$pull: {'orderRequests': orderID, 'orders': orderID}}, function (err) {
+							console.log(err);
+						});
+					}
 				}
 				Order.remove({'_id':orderID, 'owner': userEmail, 'status': 'waiting'},function (err,data)
 				{

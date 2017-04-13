@@ -54,7 +54,7 @@ router.use(cookieParser(), (req, res, next) => {
 					next();
 				});
 			} else {
-				res.cookie('token', '');
+				res.cookie('token', '', {expires: new Date(0)});
 				next();
 			}
 		});

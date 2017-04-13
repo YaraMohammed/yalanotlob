@@ -11,10 +11,9 @@ module.exports = {
 		var invited = [];
 		for (var friend of friends)
 		{
-			console.log(friend) 
-			// --> invited
 			if (user.friends.indexOf(friend) != -1)
 			{
+				invited.push(friend)
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
 			}
 		}
@@ -48,7 +47,9 @@ module.exports = {
 				}
 				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
 					console.log(err);
-					//
+					// send notification
+					var notification = {'type': 'orderJoinRequest' , 'sender': user._id}
+					socket.sendJoinReq(notification, invited);
 					cb(null, data._id);
 				});
 			}

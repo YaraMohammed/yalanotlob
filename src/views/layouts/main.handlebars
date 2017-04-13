@@ -6,6 +6,11 @@
 		<script src="/assets/js/app.js" charset="utf-8"></script>
 	</head>
 	<body>
+		{{#if user}}
+		{{> user/nav}}
+		{{else}}
+		{{> guest/nav}}
+		{{/if}}
 		{{{body}}}
 	</body>
 	<script src="/socket.io/socket.io.js"></script>

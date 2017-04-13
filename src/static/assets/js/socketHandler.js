@@ -8,7 +8,7 @@ if(getCookie('token')){
   socket.on('notification', function(data){
   	// socket.emit('confirm','notificationRecieved');
     if(data.type == 'orderJoinRequest'){
-      $('#notifications').prepend("<li>"+data.senderName+" has invited you to his order<a href=/order/"+data.orderID+"/accept>Join</a></li>")
+      $('#notifications').prepend("<li><a href=/user/"+data.sender+">"+data.senderName+" </a> has invited you to his order<a href=/order/"+data.orderID+"/accept>Join</a></li>")
     }
   });
 

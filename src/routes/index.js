@@ -53,6 +53,8 @@ router.use(cookieParser(), (req, res, next) => {
 					res.locals.notifications = notifs;
 					next();
 				});
+			} else if (req.url == '/logout') {
+				next();
 			} else {
 				res.redirect('/logout');
 			}

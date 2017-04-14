@@ -49,13 +49,9 @@ router.use(cookieParser(), (req, res, next) => {
 			// list all notifications
 			if (user) {
 				res.locals.user = user;
-				// TODO replace with getNotifs
-				order.getOrderRequests(email, user.orderRequests, (data) => {
-					res.locals.orderRequests = data;
-					order.getNotifs(user, (notifs) => {
-						res.locals.notifications = notifs;
-						next();
-					});
+				order.getNotifs(user, (notifs) => {
+					res.locals.notifications = notifs;
+					next();
 				});
 			} else {
 				res.cookie('token', '', {expires: new Date(0)});
@@ -71,9 +67,9 @@ router.use(cookieParser(), (req, res, next) => {
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
-	var data = {'type':'orderJoinRequest','sender':'Yara'};
-	var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ];
-	socket.sendJoinReq(data,invited);
+	// var data = {'type':'orderJoinRequest','sender':'Yara'};
+	// var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ];
+	// socket.sendJoinReq(data,invited);
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
@@ -324,7 +320,7 @@ router.get('/order/:orderID/:itemID/delete', (req, res) => {
 });
 
 router.get('/order/:orderID/accept', (req, res) => {
-	order.accept(res.locals.user._id, req.params.orderID);
+	order.accept(res.locals.user, req.params.orderID);
 	res.redirect('/order/'+req.params.orderID);
 });
 

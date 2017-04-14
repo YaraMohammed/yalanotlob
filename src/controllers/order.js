@@ -13,7 +13,7 @@ module.exports = {
 		{
 			if (user.friends.indexOf(friend) != -1)
 			{
-				invited.push(friend)
+				invited.push(friend);
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
 			}
 		}
@@ -48,7 +48,7 @@ module.exports = {
 				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
 					console.log(err);
 					// send notification
-					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id}
+					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id};
 					console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
 					cb(null, data._id);
@@ -75,30 +75,9 @@ module.exports = {
 	);
 	},
 
-	// get order requests' details
-	getOrderRequests: function(userEmail, orderRequestIds, cb) {
-		Order.find({'_id': {$in: orderRequestIds}}, (err, orderReqs) => {
-			var owners = [];
-			for (var id in orderReqs) {
-				owners.push(orderReqs[id].owner);
-				orderReqs[id].requests = orderReqs[id].requests[Buffer(userEmail).toString('base64')];
-			}
-			User.find({'_id': {$in: owners}},function (err,users) {
-				var userNames = {};
-				for (var user of users) {
-					userNames[user._id] = user.name;
-				}
-				for (var id in orderReqs) {
-					orderReqs[id].name = userNames[orderReqs[id].owner];
-				}
-				cb(orderReqs, users /*TODO do not get users here*/);
-			});
-		}).sort({createdAt: -1});
-	},
-
 	// get order notifications
 	getNotifs: function(user, cb) {
-		this.getOrderRequests(user._id, user.orderRequests, (reqs) => {
+		Order.find({'_id': {$in: user.orderRequests}}, (err, reqs) => {
 			var notifs = [];
 			var users = [];
 			for (var req of reqs) {
@@ -107,7 +86,7 @@ module.exports = {
 					type: 'req',
 					user: req.owner,
 					orderID: req._id,
-					myStatus: req.requests,
+					myStatus: req.requests[Buffer(user._id).toString('base64')],
 					status: req.status,
 					time: req.createdAt
 				});
@@ -129,20 +108,19 @@ module.exports = {
 				for (var id in notifs) {
 					notifs[id].userName = userNames[notifs[id].user];
 				}
-				console.log(notifs);
 				cb(notifs);
 			});
-		});
+		}).sort({createdAt: -1});
 	},
 
 	// accept order invitation
-	accept: function(userEmail, orderID)
+	accept: function(user, orderID)
 	{
 		Order.findOne(
 			{
 				'_id': orderID
 			}, (err, order) => {
-			userEmail = new Buffer(userEmail).toString('base64');
+			var userEmail = new Buffer(user._id).toString('base64');
 			if (order.requests[userEmail] == undefined)
 			{
 				throw 'Error';
@@ -153,13 +131,16 @@ module.exports = {
 				var oReq = {};
 				oReq[criteria] = 'accepted';
 				console.log(oReq);
-				Order.update({'_id': orderID},{$set:oReq}, (err) => {
+				Order.update({'_id': orderID},{$set:oReq}, (err, order) => {
 					console.log(err);
 				});
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
 					console.log(err);
 				});
+				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name , 'orderID': orderID};
+				console.log('Notification ',notification,' invited ',[order.owner]);
+				socket.sendOrderAccept(notification, [order.owner]);
 				var q = {};
 				q['orderAccepts.'+orderID] = {
 					user: userEmail,
@@ -282,7 +263,14 @@ module.exports = {
 					if(!err)
 					{
 						console.log(data);
+					} else {
+						console.log(err);
 					}
+				});
+				var q = {};
+				q['orderAccepts.'+orderID] = [];
+				User.findOneAndUpdate({'_id': data.owner}, {$unset: q}, function (err) {
+					console.log(err);
 				});
 			}
 			else {

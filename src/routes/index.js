@@ -54,8 +54,7 @@ router.use(cookieParser(), (req, res, next) => {
 					next();
 				});
 			} else {
-				res.cookie('token', '', {expires: new Date(0)});
-				next();
+				res.redirect('/logout');
 			}
 		});
 	} else {
@@ -82,6 +81,11 @@ router.get('/', (req, res) => {
 	} else {
 		res.render('index');
 	}
+});
+
+router.get('/logout', (req, res) => {
+	res.cookie('token', '', {expires: new Date(0)});
+	res.redirect('/');
 });
 
 router.route('/login').

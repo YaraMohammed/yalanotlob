@@ -43,17 +43,19 @@ router.use(cookieParser(), (req, res, next) => {
 	// allow remote control
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	res.locals.layout = 'guest';
 	if (req.cookies.token) {
 		var email = user.userEmail(req.cookies.token);
 		user.get(email, (user) => {
 			// list all notifications
 			if (user) {
 				res.locals.user = user;
+				res.locals.layout = 'user';
 				order.getNotifs(user, (notifs) => {
 					res.locals.notifications = notifs;
 					next();
 				});
-			} else if (req.url == '/logout') {
+			} else if (req.url == '/logout' || req.url.startsWith('/assets/')) {
 				next();
 			} else {
 				res.redirect('/logout');
@@ -90,15 +92,7 @@ router.get('/logout', (req, res) => {
 	res.redirect('/');
 });
 
-router.route('/login').
-get((req, res) => {
-	if (res.locals.user) {
-		res.redirect('/');
-	} else {
-		res.render('auth/login');
-	}
-}).
-post((req, res) => {
+router.post('/login', (req, res) => {
 	user.token(req.body['user-email'], req.body['user-pass'], function(token) {
 		if (token != null) {
 			res.cookie('token', token);
@@ -184,6 +178,7 @@ post((req, res) => {
 
 router.route('/change-pass').
 get((req, res) => {
+	res.locals.layout = 'guest';
 	res.render('auth/change-pass');
 }).
 post((req, res) => {
@@ -201,7 +196,7 @@ router.get('/profile', (req, res) => {
 });
 
 router.use((req, res, next) => {
-	if (!res.locals.user) {
+	if (!res.locals.user && !req.url.startsWith('/assets')) {
 		res.redirect('/');
 	} else {
 		next();
@@ -369,8 +364,6 @@ router.get('/order-sum', (req, res) => {
 router.get('/notifications', (req, res) => {
 	res.render('user/notifications');
 });
-
-router.use(express.static(__dirname + '/../static', {extensions: 'html'}));
 
 /* EXPORTING */
 module.exports = router;

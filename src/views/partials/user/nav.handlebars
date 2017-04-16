@@ -1,14 +1,5 @@
 <nav>
-	<a href="/">Home</a>
-	<a href="/friends">Friends</a>
-	<a href="/groups">Groups</a>
-	<a href="/orders">Orders</a>
-	<a href="/profile">{{user.name}}</a>
-	<a href="/logout">Logout</a>
 	<div>
-		<div>
-			Notifications
-		</div>
 		<ul id='notifications'>
 			{{#each notifications}}
 			{{#ifEq type "req"}}

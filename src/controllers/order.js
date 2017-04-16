@@ -1,5 +1,6 @@
 var Order = require('../models/order');
 var User = require('../models/user');
+var user = require('./user');
 var socket = require('./sio');
 
 
@@ -131,7 +132,7 @@ module.exports = {
 				var oReq = {};
 				oReq[criteria] = 'accepted';
 				console.log(oReq);
-				Order.update({'_id': orderID},{$set:oReq}, (err, order) => {
+				Order.update({'_id': orderID},{$set:oReq}, (err) => {
 					console.log(err);
 				});
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
@@ -311,7 +312,16 @@ module.exports = {
 	// lists friends activity
 	friendsActivity: function(friendsEmails, cb) {
 		Order.find({owner: {$in: friendsEmails}}, (err, data) => {
-			cb(err, data);
+			user.listFriends(friendsEmails, (err, friends) => {
+				var fObj = {};
+				for (var friend of friends) {
+					fObj[friend._id] = friend.name;
+				}
+				for (var id in data) {
+					data[id].name = fObj[data[id].owner];
+				}
+				cb(err, data);
+			});
 		});
 		// Map Reduce
 	}

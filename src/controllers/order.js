@@ -176,23 +176,42 @@ module.exports = {
 			comment: comment
 		};
 		Order.findOne({'_id': orderID},function (err, data) {
-			for(var key in data.requests)
+			console.log(data);
+			if (err || !data || data.status != 'waiting') {
+				cb(err, data);
+				return;
+			}
+			if (data.owner == userEmail) {
+				Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
+				{
+					if(!err)
+					{
+						console.log(data);
+						cb(err, data);
+					}
+					else
+					{
+						console.error(err);
+					}
+				});
+			}
+			else for(var key in data.requests)
 			{
 				if(data.requests.hasOwnProperty(key) && new Buffer(key, 'base64').toString('ascii') == userEmail)
 				{
-					if(!err && data && data.status == 'waiting' && data.requests[key] == 'accepted')
+					if(data.requests[key] == 'accepted')
 					{
 						Order.update({'_id': orderID},{$push:{'orders':itoma}},function (err,data)
 						{
 							if(!err)
 							{
-								// console.log(data);
+								console.log(data);
+								cb(err, data);
 							}
 							else
 							{
 								console.error(err);
 							}
-							cb(err);
 						});
 
 					}

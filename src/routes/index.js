@@ -6,7 +6,7 @@ require('../controllers/auth');
 var user = require('../controllers/user');
 var order = require('../controllers/order');
 var cookieParser = require('cookie-parser');
-var socket = require('../controllers/sio');
+var upload = require('multer')({ dest: 'uploads/' });
 
 /*//////////////// Try Socket
 var data = {'type':'orderJoinRequest','sender':'Yara'}
@@ -146,14 +146,15 @@ get((req, res) => {
 		res.render('auth/register');
 	}
 }).
-post((req, res) => {
-	console.log(req.body);
+post(upload.single('user-img'), (req, res) => {
+	console.log(req.body, req.file);
+	if (!req.file) req.file = {filename: ''};
 	user.register(
 		req.body['user-name'],
 		req.body['user-email'],
 		req.body['user-pass'],
 		req.body['user-pass-conf'],
-		'',
+		req.file.filename,
 		function (err) {
 			if(!err)
 			{
@@ -290,7 +291,37 @@ get((req, res) => {
 				order.requests[Buffer(res.locals.user._id).toString('base64')] == 'accepted'
 			)
 		) {
-			res.render('user/order', {order: order});
+			if (order.status == 'waiting') {
+				res.render('user/order', {order: order});
+			} else {
+				var orders = {};
+				for (var o of order.orders) {
+					if (orders[o.item]) {
+						orders[o.item].amount += o.amount;
+						orders[o.item].price += o.price;
+						if (o.comment) {
+							if (orders[o.item].comment) {
+								orders[o.item].comment += '<br>' + o.owner + ': ' + o.comment;
+							} else {
+								orders[o.item].comment = o.comment;
+							}
+						}
+					} else {
+						orders[o.item] = {
+							item: o.item,
+							amount: o.amount,
+							price: o.price,
+							comment: o.owner + ': ' + o.comment
+						};
+					}
+				}
+				var oNew = [];
+				for (var i in orders) {
+					oNew.push(orders[i]);
+				}
+				console.log(oNew);
+				res.render('user/order-sum', {orders: oNew});
+			}
 		} else {
 			res.redirect('/orders');
 		}
@@ -329,14 +360,15 @@ router.route('/order-new').
 get((req, res) => {
 	res.render('user/order-new');
 }).
-post((req, res) => {
+post(upload.single('order-menu-img'), (req, res) => {
 	console.log(req.body);
+	if (!req.file) req.file = {filename: ''};
 	order.create(
 		res.locals.user,
 		req.body['order-type'],
 		req.body['order-restaurant'],
 		req.body['order-friends'].split(','),
-		'',
+		req.file.filename,
 		(err, orderID) => {
 			if (!err) {
 				res.redirect('/order/'+orderID);

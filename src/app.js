@@ -23,6 +23,7 @@ app.set('view engine', 'handlebars');
 app.use(passport.initialize());
 
 app.use(express.static(__dirname + '/static'/*, {extensions: 'html'}*/));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/api', require('./routes/api'));
 app.use('/', require('./routes/index'));
 

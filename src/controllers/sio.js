@@ -21,10 +21,6 @@ module.exports = {
 				}
 			});
 
-			sock.on('confirm',function(data) {
-				console.log(data);
-			});
-
 			sock.on('disconnect', function(){
 				var arr = Object.keys(connections);
 				for(var email in arr){
@@ -51,9 +47,8 @@ module.exports = {
 		this.sendJoinReq(notification, invited);
 	},
 
-	// NOTE this seems to be not used
-	sendNotification: function(notification){
-		sio.emit('notification', notification);
+	notifyFinishedOrder: function(notification){
+		sio.emit('notifyFinished', notification);
 	},
 
 	newFriendActivity: function(data){

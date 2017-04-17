@@ -139,7 +139,6 @@ module.exports = {
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
 					console.log(err);
 					if(!err){
-						//socket
 					}
 				});
 				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name , 'orderID': orderID};
@@ -241,7 +240,8 @@ module.exports = {
 		{
 			if(!err)
 			{
-				//socket
+				var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail}
+				socket.notifyFinishedOrder(notifyFinished)
 				console.log(data);
 			}
 		}
@@ -328,6 +328,5 @@ module.exports = {
 				cb(err, data);
 			});
 		});
-		// Map Reduce
 	}
 };

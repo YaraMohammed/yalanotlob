@@ -8,18 +8,17 @@ module.exports = {
 	// create new order functions
 	create: function(user, type, restaurant, friends, menuImageUrl, cb)
 	{
+		console.log('friends ',friends)
 		var reqs = {};
 		var invited = [];
 		var notInvitedFriends = user.friends;
 		for (var friend of friends)
 		{
-			if(user.friends.includes(friend)){
-				var i = notInvitedFriends.indexOf(friend);
-				notInvitedFriends.splice(i, 1);
-			}
 			if (user.friends.indexOf(friend) != -1)
 			{
 				invited.push(friend);
+				var i = notInvitedFriends.indexOf(friend);
+				notInvitedFriends.splice(i, 1);
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
 			}
 		}
@@ -53,10 +52,12 @@ module.exports = {
 				}
 				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
 					console.log(err);
+					
 					// send notification
 					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id};
 					// console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
+					
 					//update friends activity for user friends
 					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'orderType': type , 'restaurant': restaurant}
 					socket.newFriendActivity(notifyFriend, notInvitedFriends);

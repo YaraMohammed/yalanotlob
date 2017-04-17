@@ -1,6 +1,7 @@
 if(getCookie('token')){
 	var socket = io.connect('http://'+server.host+':'+server.port);
 	socket.on('connect', function(){
+		console.log('connected')
 		socket.emit('token',getCookie('token'))
 	});
 
@@ -17,5 +18,6 @@ if(getCookie('token')){
 		} else if (data.type == 'notifyFriend'){
 			console.log(data)
 		}
+		console.log(data)
 	});
 }

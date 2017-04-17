@@ -43,6 +43,8 @@ module.exports = {
 	},
 
 	sendJoinReq: function(notification,invited){
+		console.log('sendJoinReq')
+		console.log('invited ',invited)
 		this.send(notification, invited);
 	},
 

@@ -13,13 +13,13 @@ module.exports = {
 			sock.on('token', function(token){
 				var arr = Object.keys(connections);
 				if(!arr.includes(user.userEmail(token))){
-					connections[user.userEmail(token)] = []
-					connections[user.userEmail(token)].push(sock)
+					connections[user.userEmail(token)] = [];
+					connections[user.userEmail(token)].push(sock);
 				}
 				else{
 					connections[user.userEmail(token)].push(sock);
 				}
-			})
+			});
 
 			sock.on('confirm',function(data) {
 				console.log(data);
@@ -33,20 +33,25 @@ module.exports = {
 						connections[arr[email]].splice(i, 1);
 					}
 				}
-			})
+			});
 
 		});
 	},
 
 	sendJoinReq: function(notification,invited){
 		var arr = Object.keys(connections);
-		for (var friend in invited){
+		for (var friend in invited)
 			if(arr.includes(invited[friend]))
 				for(var sock in connections[invited[friend]])
 					connections[invited[friend]][sock].emit('notification', notification);
-	}
 	},
 
+	// TODO merge with sendJoinReq (take permission to do so :p)
+	sendOrderAccept: function(notification, invited){
+		this.sendJoinReq(notification, invited);
+	},
+
+	// NOTE this seems to be not used
 	sendNotification: function(notification){
 		sio.emit('notification', notification);
 	},

@@ -43,19 +43,22 @@ router.use(cookieParser(), (req, res, next) => {
 	// allow remote control
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	res.locals.layout = 'guest';
 	if (req.cookies.token) {
 		var email = user.userEmail(req.cookies.token);
 		user.get(email, (user) => {
 			// list all notifications
 			if (user) {
 				res.locals.user = user;
-				order.getOrderRequests(email, user.orderRequests, (data) => {
-					res.locals.orderRequests = data;
+				res.locals.layout = 'user';
+				order.getNotifs(user, (notifs) => {
+					res.locals.notifications = notifs;
 					next();
 				});
-			} else {
-				res.cookie('token', '', {expires: new Date(0)});
+			} else if (req.url == '/logout' || req.url.startsWith('/assets/')) {
 				next();
+			} else {
+				res.redirect('/logout');
 			}
 		});
 	} else {
@@ -67,9 +70,9 @@ router.use(cookieParser(), (req, res, next) => {
 router.use(bodyParser.urlencoded({ extended: false }));
 
 router.get('/', (req, res) => {
-	var data = {'type':'orderJoinRequest','sender':'Yara'};
-	var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ];
-	socket.sendJoinReq(data,invited);
+	// var data = {'type':'orderJoinRequest','sender':'Yara'};
+	// var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@gmail.com' ];
+	// socket.sendJoinReq(data,invited);
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			res.locals.orders = orders;
@@ -84,15 +87,12 @@ router.get('/', (req, res) => {
 	}
 });
 
-router.route('/login').
-get((req, res) => {
-	if (res.locals.user) {
-		res.redirect('/');
-	} else {
-		res.render('auth/login');
-	}
-}).
-post((req, res) => {
+router.get('/logout', (req, res) => {
+	res.cookie('token', '', {expires: new Date(0)});
+	res.redirect('/');
+});
+
+router.post('/login', (req, res) => {
 	user.token(req.body['user-email'], req.body['user-pass'], function(token) {
 		if (token != null) {
 			res.cookie('token', token);
@@ -178,6 +178,7 @@ post((req, res) => {
 
 router.route('/change-pass').
 get((req, res) => {
+	res.locals.layout = 'guest';
 	res.render('auth/change-pass');
 }).
 post((req, res) => {
@@ -195,7 +196,7 @@ router.get('/profile', (req, res) => {
 });
 
 router.use((req, res, next) => {
-	if (!res.locals.user) {
+	if (!res.locals.user && !req.url.startsWith('/assets')) {
 		res.redirect('/');
 	} else {
 		next();
@@ -320,7 +321,7 @@ router.get('/order/:orderID/:itemID/delete', (req, res) => {
 });
 
 router.get('/order/:orderID/accept', (req, res) => {
-	order.accept(res.locals.user._id, req.params.orderID);
+	order.accept(res.locals.user, req.params.orderID);
 	res.redirect('/order/'+req.params.orderID);
 });
 
@@ -363,8 +364,6 @@ router.get('/order-sum', (req, res) => {
 router.get('/notifications', (req, res) => {
 	res.render('user/notifications');
 });
-
-router.use(express.static(__dirname + '/../static', {extensions: 'html'}));
 
 /* EXPORTING */
 module.exports = router;

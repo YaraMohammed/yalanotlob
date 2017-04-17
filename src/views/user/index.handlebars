@@ -1,18 +1,43 @@
-<div>
-    <h2>Latest Orders</h2>
-    <div>
-        <ul>
-        {{#each orders}}
-            <li><a href="/order/{{_id}}">{{type}} from {{restaurant}}</a></li>
-        {{/each}}
-        </ul>
-    </div>
-</div>
-<div>
-    <h2>Friends' Activity</h2>
-    <div>
-    {{#each friendsActivity}}
-        <a href="/user/{{owner}}">{{owner}}</a> made an order for {{type}} from {{restaurant}}<br>
-    {{/each}}
+<div class="container">
+    <div class="row">
+        <!-- Latest Orders -->
+        <div class="col-md-6">
+            <div class="panel panel-primary-custom">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Latest Orders</h3>
+                  </div>
+                  <div class="panel-body fixed-panel">
+                        <h4>
+                            <dl>
+                                {{#each orders}}
+                                <dt><a href="/order/{{_id}}"><span class="label label-primary">{{type}}</span></a></dt>
+                                    <dd>- From {{restaurant}} On {{createdAt}}</dd>
+                                {{/each}}
+                            </dl>
+                    </h4>
+                  </div>
+            </div>
+        </div>
+        <!-- // Latest Orders -->
+
+        <!-- Friends Activity -->
+        <div class="col-md-6">
+            <div class="panel panel-primary-custom">
+              <div class="panel-heading">
+                <h3 class="panel-title">Friends Activity</h3>
+              </div>
+              <div class="panel-body fixed-panel">
+                    <h4>
+                        <dl>
+                            {{#each friendsActivity}}
+                                <dt><a href="/user/{{owner}}"><span class="label label-primary">{{name}}</span></a></dt>
+                                    <dd>- has created an order for {{type}} from {{restaurant}}</dd>
+                            {{/each}}
+                        </dl>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <!-- // Friends Activity -->
     </div>
 </div>

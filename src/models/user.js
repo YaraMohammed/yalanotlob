@@ -9,6 +9,7 @@ var schema = new mongoose.Schema({
 	password: String,
 	friends: [String],
 	orderRequests: [String],
+	orderAccepts: Object,
 	orders: [String],
 	imageUrl: String,
 	groups: Object

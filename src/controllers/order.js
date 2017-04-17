@@ -1,5 +1,6 @@
 var Order = require('../models/order');
 var User = require('../models/user');
+var user = require('./user');
 var socket = require('./sio');
 
 
@@ -13,7 +14,7 @@ module.exports = {
 		{
 			if (user.friends.indexOf(friend) != -1)
 			{
-				invited.push(friend)
+				invited.push(friend);
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
 			}
 		}
@@ -48,7 +49,7 @@ module.exports = {
 				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
 					console.log(err);
 					// send notification
-					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id}
+					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id};
 					console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
 					cb(null, data._id);
@@ -75,35 +76,52 @@ module.exports = {
 	);
 	},
 
-	// get order requests' details
-	getOrderRequests: function(userEmail, orderRequestIds, cb) {
-		Order.find({'_id': {$in: orderRequestIds}}, (err, orderReqs) => {
-			var owners = [];
-			for (var id in orderReqs) {
-				owners.push(orderReqs[id].owner);
-				orderReqs[id].requests = orderReqs[id].requests[Buffer(userEmail).toString('base64')];
+	// get order notifications
+	getNotifs: function(user, cb) {
+		Order.find({'_id': {$in: user.orderRequests}}, (err, reqs) => {
+			var notifs = [];
+			var users = [];
+			for (var req of reqs) {
+				users.push(req.owner);
+				notifs.push({
+					type: 'req',
+					user: req.owner,
+					orderID: req._id,
+					myStatus: req.requests[Buffer(user._id).toString('base64')],
+					status: req.status,
+					time: req.createdAt
+				});
 			}
-			User.find({'_id': {$in: owners}},function (err,users) {
+			for (var orderID in user.orderAccepts) {
+				for (var acc of user.orderAccepts[orderID]) {
+					users.push(acc.user);
+					acc.type = 'acc';
+					acc.orderID = orderID;
+					notifs.push(acc);
+				}
+			}
+			notifs.sort((a, b) => { return a.time < b.time; });
+			User.find({'_id': {$in: users}},function (err,users) {
 				var userNames = {};
 				for (var user of users) {
 					userNames[user._id] = user.name;
 				}
-				for (var id in orderReqs) {
-					orderReqs[id].name = userNames[orderReqs[id].owner];
+				for (var id in notifs) {
+					notifs[id].userName = userNames[notifs[id].user];
 				}
-				cb(orderReqs, users);
+				cb(notifs);
 			});
-		});
+		}).sort({createdAt: -1});
 	},
 
 	// accept order invitation
-	accept: function(userEmail, orderID)
+	accept: function(user, orderID)
 	{
 		Order.findOne(
 			{
 				'_id': orderID
 			}, (err, order) => {
-			userEmail = new Buffer(userEmail).toString('base64');
+			var userEmail = new Buffer(user._id).toString('base64');
 			if (order.requests[userEmail] == undefined)
 			{
 				throw 'Error';
@@ -123,6 +141,17 @@ module.exports = {
 					if(!err){
 						//socket
 					}
+				});
+				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name , 'orderID': orderID};
+				console.log('Notification ',notification,' invited ',[order.owner]);
+				socket.sendOrderAccept(notification, [order.owner]);
+				var q = {};
+				q['orderAccepts.'+orderID] = {
+					user: userEmail,
+					time: new Date()
+				};
+				User.findOneAndUpdate({'_id': order.owner}, {$push: q}, (err) => {
+					console.log(err);
 				});
 			}
 		}
@@ -240,7 +269,14 @@ module.exports = {
 					{
 						//socket
 						console.log(data);
+					} else {
+						console.log(err);
 					}
+				});
+				var q = {};
+				q['orderAccepts.'+orderID] = [];
+				User.findOneAndUpdate({'_id': data.owner}, {$unset: q}, function (err) {
+					console.log(err);
 				});
 			}
 			else {
@@ -281,7 +317,16 @@ module.exports = {
 	// lists friends activity
 	friendsActivity: function(friendsEmails, cb) {
 		Order.find({owner: {$in: friendsEmails}}, (err, data) => {
-			cb(err, data);
+			user.listFriends(friendsEmails, (err, friends) => {
+				var fObj = {};
+				for (var friend of friends) {
+					fObj[friend._id] = friend.name;
+				}
+				for (var id in data) {
+					data[id].name = fObj[data[id].owner];
+				}
+				cb(err, data);
+			});
 		});
 		// Map Reduce
 	}

@@ -172,6 +172,7 @@ module.exports = {
 
 	// create new group
 	createGroup: function(userEmail, groupName) {
+		if(/\w+$/.test(groupName)&& /^[^\$]/.test(groupName)){
 		var groupCriteria =  'groups.'+groupName;
 		var q = {_id: userEmail};
 		q[groupCriteria] = {$exists: true};
@@ -190,6 +191,9 @@ module.exports = {
 				console.log('Group Already Exists');
 			}
 		});
+	}
+	else
+		console.log('invalid name')
 	},
 
 	// delete a group

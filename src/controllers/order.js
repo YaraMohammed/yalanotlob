@@ -267,7 +267,8 @@ module.exports = {
 				{
 					if(!err)
 					{
-						//socket
+						var notifyCancelled = {'type': 'notifyCancelled', 'orderID': orderID, 'orderOwner': userEmail}
+						socket.notifyCancelledOrder(notifyCancelled)
 						console.log(data);
 					} else {
 						console.log(err);

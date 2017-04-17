@@ -51,6 +51,10 @@ module.exports = {
 		sio.emit('notifyFinished', notification);
 	},
 
+	notifyCancelledOrder: function(notification){
+		sio.emit('notifyCancelled', notification)
+	},
+
 	newFriendActivity: function(data){
 		sio.emit('newFriendActivity', data);
 	},

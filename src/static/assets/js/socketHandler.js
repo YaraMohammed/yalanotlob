@@ -17,6 +17,10 @@ if(getCookie('token')){
 		console.log(data);
 	});
 
+	socket.on('notifyCancelled', function(data){
+		console.log(data);
+	});
+
 	socket.on('newFriendActivity', function(data){
 		console.log(data);
 	});

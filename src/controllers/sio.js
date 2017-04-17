@@ -56,13 +56,12 @@ module.exports = {
 	},
 
 	//TODO emit only to invited
-	notifyCancelledOrder: function(notification){
-		sio.emit('notifyCancelled', notification)
+	notifyCancelledOrder: function(notification , notified){
+		this.send(notification, notified);
 	},
 
 	newFriendActivity: function(notification , notInvitedFriends){
-		this.sendJoinReq(notification, notInvitedFriends)
-		// sio.emit('newFriendActivity', notification);
+		this.send(notification, notInvitedFriends)
 	},
 
 	listConnections: function(){

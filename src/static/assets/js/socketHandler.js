@@ -12,11 +12,9 @@ if(getCookie('token')){
 			$('#notifications').prepend('<li><a href=/user/'+data.sender+'>'+data.senderName+' </a> has accepted invitation to <a href=/order/'+data.orderID+'>your order</a>.</li>');
 		} else if (data.type == 'notifyFinished') {
 			console.log(data);
+		} else if (data.type == 'notifyCancelled'){
+			console.log(data);
 		}
-	});
-
-	socket.on('notifyCancelled', function(data){
-		console.log(data);
 	});
 
 	socket.on('newFriendActivity', function(data){

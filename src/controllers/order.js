@@ -268,9 +268,20 @@ module.exports = {
 	// change order status to cancelled
 	cancel: function(userEmail, orderID)
 	{
+		var notified = []
 		Order.findOne({'_id': orderID}, function (err, data) {
 			if(data)
 			{
+				reqs = data.requests
+				for(var key in reqs)
+				{
+					if(reqs.hasOwnProperty(key))
+					{
+						var id = data._id;
+						var uid = new Buffer(key, 'base64').toString('ascii');
+							notified.push(uid);
+					}
+				}
 				if (data.requests)
 				{
 					for(var i = 0 ; i< Object.keys(data.requests).length ; i++)
@@ -285,7 +296,7 @@ module.exports = {
 					if(!err)
 					{
 						var notifyCancelled = {'type': 'notifyCancelled', 'orderID': orderID, 'orderOwner': userEmail}
-						socket.notifyCancelledOrder(notifyCancelled)
+						socket.notifyCancelledOrder(notifyCancelled , notified)
 						// console.log(data);
 					} else {
 						console.log(err);

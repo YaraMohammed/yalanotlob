@@ -3,7 +3,7 @@
 		<ul id='notifications'>
 			{{#each notifications}}
 			{{#ifEq type "req"}}
-			<li>
+			<li id='{{orderID}}'>
 				<a href="/user/{{user}}">{{userName}}</a> has invited you to his order.
 				{{#ifEq myStatus "waiting"}}
 				{{#ifEq status "waiting"}}
@@ -16,7 +16,7 @@
 				{{/ifEq}}
 			</li>
 			{{else}}
-			<li>
+			<li id='{{orderID}}'>
 				<a href="/user/{{user}}">{{userName}}</a> has accepted invitation to <a href="/order/{{orderID}}">your order</a>.
 			</li>
 			{{/ifEq}}

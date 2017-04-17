@@ -7,17 +7,15 @@ if(getCookie('token')){
 //listen to notification
 	socket.on('notification', function(data){
 		if(data.type == 'orderJoinRequest' && data.senderName != undefined){
-			$('#notifications').prepend('<li><a href=/user/'+data.sender+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'/accept>Join</a></li>');
+			$('#notifications').prepend('<li id="'+data.orderID+'"><a href=/user/'+data.sender+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'/accept>Join</a></li>');
 		} else if (data.type == 'orderAccept') {
 			$('#notifications').prepend('<li><a href=/user/'+data.sender+'>'+data.senderName+' </a> has accepted invitation to <a href=/order/'+data.orderID+'>your order</a>.</li>');
 		} else if (data.type == 'notifyFinished') {
-			console.log(data);
+			location.reload();
 		} else if (data.type == 'notifyCancelled'){
-			console.log(data);
+			location.reload();
 		} else if (data.type == 'notifyFriend'){			        
 			$('#activity').prepend("<h4><dl><dt><a href=/user/"+data.sender+'><span class="label label-primary">'+data.senderName+'</span></a></dt><dd>- has created an order for '+data.orderType+ ' from ' + data.restaurant+'</dd></dl></h4>')
-			console.log(data)
 		}
-		console.log(data)
 	});
 }

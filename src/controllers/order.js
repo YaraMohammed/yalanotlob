@@ -120,6 +120,9 @@ module.exports = {
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
 					console.log(err);
+					if(!err){
+						//socket
+					}
 				});
 			}
 		}
@@ -209,6 +212,7 @@ module.exports = {
 		{
 			if(!err)
 			{
+				//socket
 				console.log(data);
 			}
 		}
@@ -234,6 +238,7 @@ module.exports = {
 				{
 					if(!err)
 					{
+						//socket
 						console.log(data);
 					}
 				});

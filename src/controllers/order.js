@@ -10,10 +10,13 @@ module.exports = {
 	{
 		var reqs = {};
 		var invited = [];
-		//TODO get un invited friends
-		var notInvitedFriends = [];
+		var notInvitedFriends = user.friends;
 		for (var friend of friends)
 		{
+			if(user.friends.includes(friend)){
+				var i = notInvitedFriends.indexOf(friend);
+				notInvitedFriends.splice(i, 1);
+			}
 			if (user.friends.indexOf(friend) != -1)
 			{
 				invited.push(friend);
@@ -55,7 +58,6 @@ module.exports = {
 					// console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
 					//update friends activity for user friends
-					// console.log("not invited ",notInvitedFriends)
 					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'orderType': type , 'restaurant': restaurant}
 					socket.newFriendActivity(notifyFriend, notInvitedFriends);
 					cb(null, data._id);

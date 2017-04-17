@@ -14,10 +14,8 @@ if(getCookie('token')){
 			console.log(data);
 		} else if (data.type == 'notifyCancelled'){
 			console.log(data);
+		} else if (data.type == 'notifyFriend'){
+			console.log(data)
 		}
-	});
-
-	socket.on('newFriendActivity', function(data){
-		console.log(data);
 	});
 }

@@ -1,7 +1,6 @@
 if(getCookie('token')){
 	var socket = io.connect('http://'+server.host+':'+server.port);
 	socket.on('connect', function(){
-		console.log('connected')
 		socket.emit('token',getCookie('token'))
 	});
 
@@ -15,7 +14,8 @@ if(getCookie('token')){
 			console.log(data);
 		} else if (data.type == 'notifyCancelled'){
 			console.log(data);
-		} else if (data.type == 'notifyFriend'){
+		} else if (data.type == 'notifyFriend'){			        
+			$('#activity').prepend("<h4><dl><dt><a href=/user/"+data.sender+'><span class="label label-primary">'+data.senderName+'</span></a></dt><dd>- has created an order for '+data.orderType+ ' from ' + data.restaurant+'</dd></dl></h4>')
 			console.log(data)
 		}
 		console.log(data)

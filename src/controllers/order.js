@@ -59,7 +59,7 @@ module.exports = {
 					socket.sendJoinReq(notification, invited);
 					
 					//update friends activity for user friends
-					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'orderType': type , 'restaurant': restaurant}
+					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'senderName': user.name , 'orderType': type , 'restaurant': restaurant}
 					socket.newFriendActivity(notifyFriend, notInvitedFriends);
 					cb(null, data._id);
 				});

@@ -10,11 +10,9 @@ if(getCookie('token')){
 			$('#notifications').prepend('<li><a href=/user/'+data.sender+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'/accept>Join</a></li>');
 		} else if (data.type == 'orderAccept') {
 			$('#notifications').prepend('<li><a href=/user/'+data.sender+'>'+data.senderName+' </a> has accepted invitation to <a href=/order/'+data.orderID+'>your order</a>.</li>');
+		} else if (data.type == 'notifyFinished') {
+			console.log(data);
 		}
-	});
-
-	socket.on('notifyFinished', function(data){
-		console.log(data);
 	});
 
 	socket.on('notifyCancelled', function(data){
@@ -24,6 +22,4 @@ if(getCookie('token')){
 	socket.on('newFriendActivity', function(data){
 		console.log(data);
 	});
-
-	socket.on('disconnect', function(){});
 }

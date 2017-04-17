@@ -10,6 +10,8 @@ module.exports = {
 	{
 		var reqs = {};
 		var invited = [];
+		//TODO get un invited friends
+		var notInvitedFriends = [];
 		for (var friend of friends)
 		{
 			if (user.friends.indexOf(friend) != -1)
@@ -18,7 +20,7 @@ module.exports = {
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
 			}
 		}
-		console.log('Reqs', reqs);
+		// console.log('Reqs', reqs);
 		var order = new Order(
 			{
 				owner: user._id,
@@ -34,7 +36,7 @@ module.exports = {
 		{
 			if(!err)
 			{
-				console.log(data);
+				// console.log(data);
 				for(var key in reqs)
 				{
 					if(reqs.hasOwnProperty(key))
@@ -50,8 +52,12 @@ module.exports = {
 					console.log(err);
 					// send notification
 					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id};
-					console.log('Notification ',notification,' invited ',invited);
+					// console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
+					//update friends activity for user friends
+					// console.log("not invited ",notInvitedFriends)
+					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'orderType': type , 'restaurant': restaurant}
+					socket.newFriendActivity(notifyFriend, notInvitedFriends);
 					cb(null, data._id);
 				});
 			}
@@ -131,7 +137,7 @@ module.exports = {
 				var criteria = 'requests.'+userEmail;
 				var oReq = {};
 				oReq[criteria] = 'accepted';
-				console.log(oReq);
+				// console.log(oReq);
 				Order.update({'_id': orderID},{$set:oReq}, (err) => {
 					console.log(err);
 				});
@@ -142,7 +148,7 @@ module.exports = {
 					}
 				});
 				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name , 'orderID': orderID};
-				console.log('Notification ',notification,' invited ',[order.owner]);
+				// console.log('Notification ',notification,' invited ',[order.owner]);
 				socket.sendOrderAccept(notification, [order.owner]);
 				var q = {};
 				q['orderAccepts.'+orderID] = {
@@ -178,7 +184,7 @@ module.exports = {
 						{
 							if(!err)
 							{
-								console.log(data);
+								// console.log(data);
 							}
 							else
 							{
@@ -200,7 +206,7 @@ module.exports = {
 	},
 
 	deleteItem: function (userEmail, orderID, itemID, cb) {
-		console.log('itemId',itemID);
+		// console.log('itemId',itemID);
 
 		Order.findOne({'_id': orderID,'orders._id': itemID},function (err,data) {
 			if(!err)
@@ -212,7 +218,7 @@ module.exports = {
 						break;
 					}
 				}
-				console.log(item,userEmail);
+				// console.log(item,userEmail);
 				if(item && item.owner == userEmail)
 				{
 					Order.update({'_id': orderID},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
@@ -236,13 +242,24 @@ module.exports = {
 	// change order status to finished
 	finish: function(userEmail, orderID)
 	{
+		var notified = []
 		Order.findOneAndUpdate({'_id': orderID, 'owner': userEmail},{$set:{'status': 'finished'}},function (err,data)
 		{
 			if(!err)
 			{
+				reqs = data.requests
+				for(var key in reqs)
+				{
+					if(reqs.hasOwnProperty(key))
+					{
+						var id = data._id;
+						var uid = new Buffer(key, 'base64').toString('ascii');
+							notified.push(uid);
+					}
+				}
 				var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail}
-				socket.notifyFinishedOrder(notifyFinished)
-				console.log(data);
+				socket.notifyFinishedOrder(notifyFinished , notified)
+				// console.log(data);
 			}
 		}
 	);
@@ -269,7 +286,7 @@ module.exports = {
 					{
 						var notifyCancelled = {'type': 'notifyCancelled', 'orderID': orderID, 'orderOwner': userEmail}
 						socket.notifyCancelledOrder(notifyCancelled)
-						console.log(data);
+						// console.log(data);
 					} else {
 						console.log(err);
 					}
@@ -315,7 +332,7 @@ module.exports = {
 		});
 	},
 
-	// lists friends activity
+	// list friends activity
 	friendsActivity: function(friendsEmails, cb) {
 		Order.find({owner: {$in: friendsEmails}}, (err, data) => {
 			user.listFriends(friendsEmails, (err, friends) => {

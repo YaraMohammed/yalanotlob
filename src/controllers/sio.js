@@ -34,7 +34,7 @@ module.exports = {
 		});
 	},
 
-	sendJoinReq: function(notification,invited){
+	send: function(notification,invited){
 		var arr = Object.keys(connections);
 		for (var friend in invited)
 			if(arr.includes(invited[friend]))
@@ -42,21 +42,27 @@ module.exports = {
 					connections[invited[friend]][sock].emit('notification', notification);
 	},
 
+	sendJoinReq: function(notification,invited){
+		this.send(notification, invited);
+	},
+
 	// TODO merge with sendJoinReq (take permission to do so :p)
 	sendOrderAccept: function(notification, invited){
-		this.sendJoinReq(notification, invited);
+		this.send(notification, invited);
 	},
 
-	notifyFinishedOrder: function(notification){
-		sio.emit('notifyFinished', notification);
+	notifyFinishedOrder: function(notification , notified){
+		this.send(notification, notified);
 	},
 
+	//TODO emit only to invited
 	notifyCancelledOrder: function(notification){
 		sio.emit('notifyCancelled', notification)
 	},
 
-	newFriendActivity: function(data){
-		sio.emit('newFriendActivity', data);
+	newFriendActivity: function(notification , notInvitedFriends){
+		this.sendJoinReq(notification, notInvitedFriends)
+		// sio.emit('newFriendActivity', notification);
 	},
 
 	listConnections: function(){

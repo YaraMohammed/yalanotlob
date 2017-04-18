@@ -75,6 +75,10 @@ router.get('/', (req, res) => {
 	// socket.sendJoinReq(data,invited);
 	if (res.locals.user) {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
+			for (var i = 0; i < orders.length; i++) {
+				orders[i].cAt = orders[i].createdAt.toDateString();
+				console.log(orders[i].createdAt);
+			}
 			res.locals.orders = orders;
 			order.friendsActivity(res.locals.user.friends, (err, data) => {
 				res.locals.friendsActivity = data;
@@ -346,33 +350,6 @@ get((req, res) => {
 						joinedCnt: joinedCnt
 					});
 				});
-				// var invited = 0;
-				// var joined = 0;
-				// var invitedUsrs = [];
-				// var joinedUsrs = [];
-				// console.log(order.requests);
-				// for (var usr in order.requests) {
-				// 	invited++;
-				// 	if (order.requests[usr] == 'accepted') {
-				// 		joined++;
-				// 	}
-				// }
-				// order.invited = invited;
-				// order.joined = joined;
-				// var invitedList = [];
-				// for (var i = 0; i < order.requests.length; i++) {
-				// 	invitedList.push(order.requests[i].owner);
-				// }
-				// var userNames = {};
-				// user.listFriends(invitedList, (err, users) => {
-				// 	for (var j in users) {
-				// 		userNames[users[j]._id] = users[j].name;
-				// 	}
-				// 	for (var k in order.orders) {
-				// 		order.orders[k].name = userNames[order.orders[k].owner];
-				// 	}
-				// 	res.render('user/order', {order: order});
-				// });
 			} else {
 				var orders = {};
 				for (var o of order.orders) {

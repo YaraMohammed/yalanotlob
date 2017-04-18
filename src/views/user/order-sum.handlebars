@@ -1,20 +1,47 @@
-<table>
-	<thead>
-		<tr>
-			<th>Item</th>
-			<th>Amount</th>
-			<th>Price</th>
-			<th>Comments</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{#each orders}}
-		<tr>
-			<td>{{item}}</td>
-			<td>{{amount}}</td>
-			<td>{{price}}</td>
-			<td>{{{comment}}}</td>
-		</tr>
-		{{/each}}
-	</tbody>
-</table>
+<!-- Add Item Label -->
+<div class="container">
+	<h2><p class="text-left"><span class="label label-default">Add Item</span></p></h2>
+</div>
+<!-- // Add Item Label -->
+
+<!-- Orders Details Container  -->
+<BR>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-primary-custom">
+			  <div class="panel-heading">
+				<h3 class="panel-title">Orders Details</h3>
+			  </div>
+
+				<div class="panel-body fixed-panel">
+					<!-- Orders Details Table -->
+					<div class="table-responsive">
+					  <table class="table table-bordered">
+						<thead>
+						  <tr>
+							<th>Item</th>
+							<th>Amount</th>
+							<th>Price</th>
+							<th>Comment</th>
+						  </tr>
+						</thead>
+						<tbody>
+						{{#each orders}}
+							<tr>
+								<td>{{item}}</td>
+								<td>{{amount}}</td>
+								<td>{{price}}</td>
+								<td>{{{comment}}}</td>
+							</tr>
+						{{/each}}
+						</tbody>
+					  </table>
+					</div>
+					<!-- // Orders Details Table -->
+			  </div>
+			</div>
+		</div>
+</div>
+</div>
+<!-- // Orders Details Container -->

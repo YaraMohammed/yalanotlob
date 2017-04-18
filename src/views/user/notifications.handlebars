@@ -1,2 +1,50 @@
-<h1>Notifications</h1>
-\{{notifications}}
+<!--  -->
+<div class="container">
+<div class="row">
+	<!-- Profile -->
+	<div class="col-md-12">
+		<div class="panel panel-primary-custom">
+		  <div class="panel-heading"><h3 class="panel-title">All Notification</h3></div>
+			<div class="panel-body fixed-panel">
+				<ul>
+					<li role="separator" class="divider"></li>
+					{{#each notifications}}
+					{{#ifEq type "req"}}
+					<li>
+						{{#ifEq myStatus "waiting"}}
+						{{#ifEq status "waiting"}}
+						<a href="/order/{{orderID}}/accept"  style="color:white">
+							<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+							{{userName}} has invited you to his/her order. Click to Join
+						</a>
+						{{else}}
+						<a href="/order/{{orderID}}"  style="color:white">
+							<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+							{{userName}} has invited you to his/her order. Finished
+						</a>
+						{{/ifEq}}
+						{{else}}
+						<a href="/order/{{orderID}}"  style="color:white">
+							<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+							{{userName}} has invited you to his/her order. Joined
+						</a>
+						{{/ifEq}}
+					</li>
+					{{else}}
+					<li>
+						<a href="/order/{{orderID}}"  style="color:white">
+							<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+							{{userName}} has accepted invitation to your order
+						</a>
+					</li>
+					{{/ifEq}}
+					{{/each}}
+				</ul>
+
+			</div>
+		</div>
+		<!-- // Profile -->
+	</div>
+</div>
+</div>
+<!--  -->

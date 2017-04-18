@@ -388,6 +388,6 @@ module.exports = {
 				}
 				cb(err, data);
 			});
-		});
+		}).sort({createdAt: -1});
 	}
 };

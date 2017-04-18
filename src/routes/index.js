@@ -228,7 +228,7 @@ post((req,res) =>{
 	user.addFriend(
 		res.locals.user._id,
 		req.body['add-friend'],
-		function (err,data) {
+		function () {
 			res.redirect('/friends');
 		}
 	);

@@ -8,7 +8,11 @@ module.exports = {
 	// create new order functions
 	create: function(user, type, restaurant, friends, menuImageUrl, cb)
 	{
-		console.log('friends ',friends)
+		if (!type || !restaurant || !friends) {
+			cb('Insufficient data given');
+			return;
+		}
+		console.log('friends ',friends);
 		var reqs = {};
 		var invited = [];
 		var notInvitedFriends = user.friends;
@@ -52,14 +56,14 @@ module.exports = {
 				}
 				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
 					console.log(err);
-					
+
 					// send notification
 					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id};
 					// console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
-					
+
 					//update friends activity for user friends
-					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'senderName': user.name , 'orderType': type , 'restaurant': restaurant}
+					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'senderName': user.name , 'orderType': type , 'restaurant': restaurant};
 					socket.newFriendActivity(notifyFriend, notInvitedFriends);
 					cb(null, data._id);
 				});
@@ -113,10 +117,11 @@ module.exports = {
 			User.find({'_id': {$in: users}},function (err,users) {
 				var userNames = {};
 				for (var user of users) {
-					userNames[user._id] = user.name;
+					userNames[user._id] = [user.name, user.imageUrl];
 				}
 				for (var id in notifs) {
-					notifs[id].userName = userNames[notifs[id].user];
+					notifs[id].userName = userNames[notifs[id].user][0];
+					notifs[id].userImage = userNames[notifs[id].user][1];
 				}
 				cb(notifs);
 			});
@@ -147,8 +152,6 @@ module.exports = {
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
 					console.log(err);
-					if(!err){
-					}
 				});
 				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name , 'orderID': orderID};
 				// console.log('Notification ',notification,' invited ',[order.owner]);
@@ -169,6 +172,10 @@ module.exports = {
 	// add an item to order
 	addItem: function(userEmail, orderID, item, amount, price, comment, cb)
 	{
+		if (!item || !amount || !price) {
+			cb('Insufficient data given');
+			return;
+		}
 		var itoma = {
 			owner: userEmail,
 			item: item,
@@ -265,19 +272,17 @@ module.exports = {
 	finish: function(userEmail, orderID)
 	{
 		var notified = []
-		var sender = ''
 		Order.findOneAndUpdate({'_id': orderID, 'owner': userEmail},{$set:{'status': 'finished'}},function (err,data)
 		{
 			if(!err)
 			{
-				reqs = data.requests
+				var reqs = data.requests;
 				for(var key in reqs)
 				{
 					if(reqs.hasOwnProperty(key))
 					{
-						var id = data._id;
 						var uid = new Buffer(key, 'base64').toString('ascii');
-							notified.push(uid);
+						notified.push(uid);
 					}
 				}
 				User.findOne({_id:userEmail},function(err,data){
@@ -295,18 +300,17 @@ module.exports = {
 	// change order status to cancelled
 	cancel: function(userEmail, orderID)
 	{
-		var notified = []
+		var notified = [];
 		Order.findOne({'_id': orderID}, function (err, data) {
 			if(data)
 			{
-				reqs = data.requests
+				var reqs = data.requests;
 				for(var key in reqs)
 				{
 					if(reqs.hasOwnProperty(key))
 					{
-						var id = data._id;
 						var uid = new Buffer(key, 'base64').toString('ascii');
-							notified.push(uid);
+						notified.push(uid);
 					}
 				}
 				if (data.requests)
@@ -318,12 +322,12 @@ module.exports = {
 						});
 					}
 				}
-				Order.remove({'_id':orderID, 'owner': userEmail, 'status': 'waiting'},function (err,data)
+				Order.remove({'_id':orderID, 'owner': userEmail, 'status': 'waiting'},function (err)
 				{
 					if(!err)
 					{
-						var notifyCancelled = {'type': 'notifyCancelled', 'orderID': orderID, 'orderOwner': userEmail}
-						socket.notifyCancelledOrder(notifyCancelled , notified)
+						var notifyCancelled = {'type': 'notifyCancelled', 'orderID': orderID, 'orderOwner': userEmail};
+						socket.notifyCancelledOrder(notifyCancelled , notified);
 						// console.log(data);
 					} else {
 						console.log(err);

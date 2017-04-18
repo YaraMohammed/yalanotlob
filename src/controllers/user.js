@@ -173,27 +173,27 @@ module.exports = {
 	// create new group
 	createGroup: function(userEmail, groupName) {
 		if(groupName.indexOf('/') == -1){
-		var groupCriteria =  'groups.'+groupName;
-		var q = {_id: userEmail};
-		q[groupCriteria] = {$exists: true};
+			var groupCriteria =  'groups.'+groupName;
+			var q = {_id: userEmail};
+			q[groupCriteria] = {$exists: true};
 
-		// var criteria = 'requests.'+userEmail;
-		var group = {};
-		group['groups.'+groupName] = [];
-		userModel.findOne(q, function(err, data) {
-			if (data == null){
-				//  add friend in user friends list
-				userModel.update({_id: userEmail},{$set:group}, function(err, data) {
-					if (err) throw err;
-					console.log(data);
-				});
-			}else{
-				console.log('Group Already Exists');
-			}
-		});
-	}
-	else
-		console.log('invalid name')
+			// var criteria = 'requests.'+userEmail;
+			var group = {};
+			group['groups.'+groupName] = [];
+			userModel.findOne(q, function(err, data) {
+				if (data == null){
+					//  add friend in user friends list
+					userModel.update({_id: userEmail},{$set:group}, function(err, data) {
+						if (err) throw err;
+						console.log(data);
+					});
+				}else{
+					console.log('Group Already Exists');
+				}
+			});
+		}
+		else
+			console.log('invalid name');
 	},
 
 	// delete a group

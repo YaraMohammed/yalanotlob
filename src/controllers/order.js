@@ -271,7 +271,7 @@ module.exports = {
 	// change order status to finished
 	finish: function(userEmail, orderID)
 	{
-		var notified = []
+		var notified = [];
 		Order.findOneAndUpdate({'_id': orderID, 'owner': userEmail},{$set:{'status': 'finished'}},function (err,data)
 		{
 			if(!err)
@@ -287,10 +287,10 @@ module.exports = {
 				}
 				User.findOne({_id:userEmail},function(err,data){
 					if(data){
-						var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail, 'senderName':data.name}
-						socket.notifyFinishedOrder(notifyFinished , notified)
+						var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail, 'senderName':data.name};
+						socket.notifyFinishedOrder(notifyFinished , notified);
 					}
-				})
+				});
 				// console.log(data);
 			}
 		}

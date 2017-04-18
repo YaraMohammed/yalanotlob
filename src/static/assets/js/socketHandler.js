@@ -29,12 +29,16 @@ if(getCookie('token')){
 			</a>');
 			if(location.pathname == '/orders'){
 				location.reload();
+			} else if(location.pathname == '/order/'+data.orderID){
+				location.replace('/orders')
 			}
 		} else if (data.type == 'notifyCancelled'){
 			$('#'+data.orderID).remove();
 			$('#'+data.orderID+'-sep').remove();
 			if(location.pathname == '/orders'){
 				location.reload();
+			} else if(location.pathname == '/order/'+data.orderID){
+				location.replace('/orders')
 			}
 		} else if (data.type == 'notifyFriend'){
 			$('#activity').prepend("<h4><dl><dt><a href=/user/"+data.sender+'><span class="label label-primary">'+data.senderName+'</span></a></dt><dd>- has created an order for '+data.orderType+ ' from ' + data.restaurant+'</dd></dl></h4>')

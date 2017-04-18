@@ -16,34 +16,48 @@
 		{{> user/nav}}
 		<div class="center-container">
 
-		    <!-- Nav Bar -->
-		    <nav class="navbar navbar-inverse">
-		      <div class="container-fluid">
-		        <div class="navbar-header">
-		          <a class="navbar-brand" href="/">YALA NOTLOB</a>
-		        </div>
+							<!-- Nav Bar -->
+							<nav class="navbar navbar-inverse">
+							  <div class="container-fluid">
+							    <div class="navbar-header">
+							      <a class="navbar-brand" href="#">YALA NOTLOB</a>
+							    </div>
 
-		            <!-- Left Side -->
-		        <ul class="nav navbar-nav">
-		          <li><a href="/">Home</a></li>
-		          <li><a href="/friends">Friends</a></li>
-		          <li><a href="/groups">Groups</a></li>
-		                <li><a href="/orders">Orders</a></li>
-		        </ul>
-		            <!-- // Left Side -->
+									<!-- Left Side -->
+							    <ul class="nav navbar-nav">
+							      <li class="active"><a href="#">Home</a></li>
+							      <li><a href="#">Friends</a></li>
+							      <li><a href="#">Groups</a></li>
+										<li><a href="#">Orders</a></li>
+							    </ul>
+									<!-- // Left Side -->
 
-		            <!-- Right Side -->
-		        <ul class="nav navbar-nav navbar-right">
-		                <li><a href="#"><span class="glyphicon glyphicon-bullhorn"></span> <span class="badge">10</span></a></li>
-		                <li><a href="/profile"><img src="/uploads/{{user.imageUrl}}" class="profile-image img-circle responsive" style="width: 25px; height: 25px;">{{user.name}}</a></li>
-		          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
-		        </ul>
-		            <!-- // Right Side -->
+									<!-- Right Side -->
+							    <ul class="nav navbar-nav navbar-right">
+										<li>
+											<div class="dropdown">
+											  <button style="margin-top: 11px" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+											    <span class="glyphicon glyphicon-bullhorn"></span> <span class="badge"> 10 </span>
+											  </button>
+											  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+													<li style="padding: 3px 20px;">Notifications</li>
+													<li role="separator" class="divider"></li>
+													<li><a href="#">Action</a></li>
+											    <li><a href="#">Another action</a></li>
+											    <li><a href="#">Something else here</a></li>
+											    <li role="separator" class="divider"></li>
+											    <li><a href="#">View All Notifications</a></li>
+											  </ul>
+											</div>
+										</li>
+										<li><a href="#"><img src="http://placehold.it/25x25" class="profile-image img-circle responsive"> Mohamed Khalil</a></li>
+							      <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+							    </ul>
+									<!-- // Right Side -->
 
-		      </div>
-		    </nav>
-		    <!-- // Nav Bar -->
-
+							  </div>
+							</nav>
+							<!-- // Nav Bar -->
 		    <BR><BR>
 			{{{body}}}
 		    <!-- Footer -->

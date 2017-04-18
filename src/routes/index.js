@@ -248,7 +248,13 @@ post((req, res) =>{
 
 router.route('/group/:groupID').
 get((req, res) => {
-	res.render('user/group', {groupID: req.params.groupID, groupMembers: res.locals.user.groups[req.params.groupID]});
+	user.listFriends(res.locals.user.groups[req.params.groupID], (err, members) => {
+		res.render('user/group', {
+			groupID: req.params.groupID,
+			members: members
+		});
+	});
+
 }).
 post((req, res) => {
 	if (req.body['add-group-submit']) {

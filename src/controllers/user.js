@@ -172,7 +172,7 @@ module.exports = {
 
 	// create new group
 	createGroup: function(userEmail, groupName) {
-		if(/\w+$/.test(groupName)&& /^[^\$]/.test(groupName)){
+		if(groupName.indexOf('/') == -1){
 		var groupCriteria =  'groups.'+groupName;
 		var q = {_id: userEmail};
 		q[groupCriteria] = {$exists: true};

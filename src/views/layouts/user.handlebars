@@ -13,6 +13,7 @@
 		<script src="/assets/js/app.js" charset="utf-8"></script>
 	</head>
 	<body>
+		<script src="/assets/js/jquery-3.2.1.min.js"></script>
 		{{> user/nav}}
 		<div class="center-container">
 
@@ -39,7 +40,7 @@
 											  <button style="margin-top: 11px" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 											    <span class="glyphicon glyphicon-bullhorn"></span> <span class="badge"> 10 </span>
 											  </button>
-											  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="width: 450px">
+											  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="width: 500px">
 													<li style="padding: 3px 20px;">Notifications</li>
 													<li role="separator" class="divider"></li>
 													{{#each notifications}}
@@ -47,17 +48,29 @@
 													<li id='{{orderID}}'>
 														{{#ifEq myStatus "waiting"}}
 														{{#ifEq status "waiting"}}
-														<a href="/order/{{orderID}}/accept">{{userName}} has invited you to his/her order. Click to Join</a>
+														<a href="/order/{{orderID}}/accept">
+															<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+															{{userName}} has invited you to his/her order. Click to Join
+														</a>
 														{{else}}
-														<a href="/order/{{orderID}}">{{userName}} has invited you to his/her order. Finished</a>
+														<a href="/order/{{orderID}}">
+															<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+															{{userName}} has invited you to his/her order. Finished
+														</a>
 														{{/ifEq}}
 														{{else}}
-														<a href="/order/{{orderID}}">{{userName}} has invited you to his/her order. Joined</a>
+														<a href="/order/{{orderID}}">
+															<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+															{{userName}} has invited you to his/her order. Joined
+														</a>
 														{{/ifEq}}
 													</li>
 													{{else}}
 													<li>
-														<a href="/user/{{user}}">{{userName}}</a> has accepted invitation to <a href="/order/{{orderID}}">your order</a>.
+														<a href="/order/{{orderID}}">
+															<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/{{userImage}}">
+															{{userName}} has accepted invitation to your order
+														</a>
 													</li>
 													{{/ifEq}}
 													<li role="separator" class="divider"></li>
@@ -86,11 +99,9 @@
 		<!-- // Center Container -->
 
 		<!-- JS -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 		<!-- // JS -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-		<script src="/assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="/assets/js/clientConfig.js" ></script>
 		<script type="text/javascript" src="/assets/js/socketHandler.js" ></script>
 	</body>

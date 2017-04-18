@@ -1,19 +1,50 @@
-<h1>Friends</h1>
-<form method="post">
-
-	<div>
-		<label>Add Friend</label>
-		<input type="text" name="add-friend">
-		<input type="submit" value="Add">
-	</div>
-</form>
-<div>
-	<ul>
-		{{#each friends}}
-		<li>
-			<a href="/user/{{_id}}">{{name}}</a>
-			<a href="/user/{{_id}}/delete">Delete</a>
-		</li>
-		{{/each}}
-	</ul>
+<!-- Friends Label -->
+<div class="container">
+	<h2><p class="text-left"><span class="label label-default">Friends</span></p></h2>
 </div>
+<!-- // Friends Label -->
+
+<!-- Friend Email -->
+<div class="container">
+	<form class="form-inline" method="post">
+	  <div>
+			<label for="friendEmail" style="color: white; font-size: 16px">Friend Email</label>
+			<input type="email" class="form-control" name="add-friend" placeholder="Example: Eng.MhmdKhalil@gmail.com" required="">
+			<button type="submit" class="btn btn-default">Add Friend</button>
+		</div>
+	</form>
+</div>
+<!-- // Friend Email -->
+
+<!-- Friends List Container  -->
+<BR><div class="container">
+	<div class="row">
+	<!-- Friends List -->
+	<div class="col-md-12">
+		<div class="panel panel-primary-custom">
+		  <div class="panel-heading">
+			<h3 class="panel-title">Friends List</h3>
+		  </div>
+		  <div class="panel-body fixed-panel">
+				<div class="row">
+					{{#each friends}}
+					<div class="col-md-2">
+	  					<div class="thumbnail">
+	  						<div class="caption">
+	  							<a href="/user/{{_id}}"><h4>{{name}}</h4></a>
+	  						</div>
+							<a href="/user/{{_id}}">
+	  					  		<img src="/uploads/{{imageUrl}}" style="width: 150px; height: 150px">
+							</a>
+	  					  	<div class="caption">
+	  							<p><a href="/user/{{_id}}/delete" class="btn btn-danger" role="button">Remove Friend</a>
+	  					  	</div>
+	  					</div>
+	  				</div>
+					{{/each}}
+		  </div>
+		</div>
+		<!-- // Friends List -->
+	</div>
+</div>
+<!-- // Friends List Container -->

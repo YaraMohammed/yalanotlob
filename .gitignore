@@ -1,3 +1,6 @@
+#
+/src/uploads/*
+
 # Logs
 logs
 *.log

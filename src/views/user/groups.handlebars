@@ -1,17 +1,49 @@
-<div>
-    <h2>My Groups</h2>
-    <form method="post">
-        <div>
-            <label>Your Group Name</label>
-            <input type="text" name="add-group">
-            <input type="submit" name="add-group-submit" value="Add Group">
+<!-- Friends Label -->
+<div class="container">
+    <h2><p class="text-left"><span class="label label-default">Groups</span></p></h2>
+</div>
+<!-- // Friends Label -->
+
+<!-- Friend Email -->
+<div class="container">
+    <form class="form-inline" method="post">
+      <div>
+            <label for="groupName" style="color: white; font-size: 16px">Group Name</label>
+            <input type="text" class="form-control" name="add-group" placeholder="Example: Best Friends" required="">
+            <input type="submit" class="btn btn-default" name="add-group-submit" value="Add Group">
         </div>
     </form>
-    {{#eachKey user.groups}}
-    <div>
-        <a href="/group/{{.}}">{{.}}</a>
-		<a href="/group/{{.}}">Add Friend</a>
-		<a href="/group/{{.}}/delete">Delete</a>
-    </div>
-    {{/eachKey}}
 </div>
+<!-- // Friend Email -->
+
+<!-- Friends List Container  -->
+<BR><div class="container">
+    <div class="row">
+        <!-- List Of Groups -->
+        <div class="col-md-4">
+            <div class="panel panel-primary-custom">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">My Groups</h3>
+                  </div>
+                  <div class="panel-body fixed-panel">
+                        <h4>
+                            <ul>
+                                {{#eachKey user.groups}}
+                                <li>
+                                    <a href="/group/{{.}}" style="color:#d4d8d7;margin-right: 25px">{{.}}</a>
+                                    <a href="/group/{{.}}"><span style="color:#06547a;margin-right: 15px" class="glyphicon glyphicon-plus"></a></span></a>
+                                    <a href="/group/{{.}}/delete"><span style="color:#930808" class="glyphicon glyphicon-remove"></span></a>
+                                </li><BR>
+                                {{/eachKey}}
+                            </ul>
+                        </h4>
+                  </div>
+            </div>
+        </div>
+    <!-- // List Of Groups -->
+
+    <!-- Friends List -->
+    <div class="col-md-8">
+    </div>
+</div>
+<!-- // Friends List Container -->

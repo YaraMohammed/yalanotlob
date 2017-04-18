@@ -3,17 +3,17 @@
 		<h2>Register New User</h2>
 	</div>
 	<div class="sub-main-w3">
-		<form method="post">
+		<form method="post" enctype="multipart/form-data">
 			<!-- Name -->
 			<input placeholder="Name" name="user-name" type="text" required=""><BR><BR>
 			<!-- <span class="icon1"><i class="fa fa-user" aria-hidden="true"></i></span> -->
 			<!-- Email -->
 			<input placeholder="Email" name="user-email" type="email" required="">
 			<!-- Password -->
-			<input placeholder="Password" name="user-pass" type="text" required="">
+			<input placeholder="Password" name="user-pass" type="password" required="">
 			<!-- <span class="icon2"><i class="fa fa-unlock" aria-hidden="true"></i></span> -->
 			<!-- Password confirmation -->
-			<input placeholder="Password Confirmation" name="user-pass-conf" type="text" required="">
+			<input placeholder="Password Confirmation" name="user-pass-conf" type="password" required="">
 			<!-- Picture -->
 			<span class="profilePicture">
 				<input accept="image/*" name="user-img" type="file" required="">

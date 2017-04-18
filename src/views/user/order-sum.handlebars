@@ -8,11 +8,13 @@
 		</tr>
 	</thead>
 	<tbody>
+		{{#each orders}}
 		<tr>
-			<td>\{{order.item}}</td>
-			<td>\{{order.amount}}</td>
-			<td>\{{order.price}}</td>
-			<td>\{{order.comments}}</td>
+			<td>{{item}}</td>
+			<td>{{amount}}</td>
+			<td>{{price}}</td>
+			<td>{{{comment}}}</td>
 		</tr>
+		{{/each}}
 	</tbody>
 </table>

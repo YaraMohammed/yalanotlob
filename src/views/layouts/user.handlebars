@@ -20,15 +20,15 @@
 							<nav class="navbar navbar-inverse">
 							  <div class="container-fluid">
 							    <div class="navbar-header">
-							      <a class="navbar-brand" href="#">YALA NOTLOB</a>
+							      <a class="navbar-brand" href="/">YALA NOTLOB</a>
 							    </div>
 
 									<!-- Left Side -->
 							    <ul class="nav navbar-nav">
-							      <li class="active"><a href="#">Home</a></li>
-							      <li><a href="#">Friends</a></li>
-							      <li><a href="#">Groups</a></li>
-										<li><a href="#">Orders</a></li>
+							      <li><a href="/">Home</a></li>
+							      <li><a href="/friends">Friends</a></li>
+							      <li><a href="/groups">Groups</a></li>
+										<li><a href="/orders">Orders</a></li>
 							    </ul>
 									<!-- // Left Side -->
 
@@ -39,19 +39,35 @@
 											  <button style="margin-top: 11px" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 											    <span class="glyphicon glyphicon-bullhorn"></span> <span class="badge"> 10 </span>
 											  </button>
-											  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+											  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="width: 450px">
 													<li style="padding: 3px 20px;">Notifications</li>
 													<li role="separator" class="divider"></li>
-													<li><a href="#">Action</a></li>
-											    <li><a href="#">Another action</a></li>
-											    <li><a href="#">Something else here</a></li>
-											    <li role="separator" class="divider"></li>
-											    <li><a href="#">View All Notifications</a></li>
-											  </ul>
+													{{#each notifications}}
+													{{#ifEq type "req"}}
+													<li id='{{orderID}}'>
+														{{#ifEq myStatus "waiting"}}
+														{{#ifEq status "waiting"}}
+														<a href="/order/{{orderID}}/accept">{{userName}} has invited you to his/her order. Click to Join</a>
+														{{else}}
+														<a href="/order/{{orderID}}">{{userName}} has invited you to his/her order. Finished</a>
+														{{/ifEq}}
+														{{else}}
+														<a href="/order/{{orderID}}">{{userName}} has invited you to his/her order. Joined</a>
+														{{/ifEq}}
+													</li>
+													{{else}}
+													<li>
+														<a href="/user/{{user}}">{{userName}}</a> has accepted invitation to <a href="/order/{{orderID}}">your order</a>.
+													</li>
+													{{/ifEq}}
+													<li role="separator" class="divider"></li>
+													{{/each}}
+													<li><a href="/notifications">View All Notifications</a></li>
+												</ul>
 											</div>
 										</li>
-										<li><a href="#"><img src="http://placehold.it/25x25" class="profile-image img-circle responsive"> Mohamed Khalil</a></li>
-							      <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+										<li><a href="/profile"><img src="/uploads/{{user.imageUrl}}" class="profile-image img-circle responsive" style="width: 25px; height: 25px;">{{user.name}}</a></li>
+							      <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 							    </ul>
 									<!-- // Right Side -->
 

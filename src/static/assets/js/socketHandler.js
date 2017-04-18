@@ -16,11 +16,15 @@ if(getCookie('token')){
 			$('#'+data.orderID).html('<li id="'+data.orderID+'"><a href=/user/'+data.orderOwner+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'>Finished</a></li>')
 			if(location.pathname == '/orders'){
 				location.reload();
+			} else if(location.pathname == '/order/'+data.orderID){
+				location.replace('/orders')
 			}
 		} else if (data.type == 'notifyCancelled'){
 			$('#'+data.orderID).remove();
 			if(location.pathname == '/orders'){
 				location.reload();
+			} else if(location.pathname == '/order/'+data.orderID){
+				location.replace('/orders')
 			}
 		} else if (data.type == 'notifyFriend'){
 			$('#activity').prepend("<h4><dl><dt><a href=/user/"+data.sender+'><span class="label label-primary">'+data.senderName+'</span></a></dt><dd>- has created an order for '+data.orderType+ ' from ' + data.restaurant+'</dd></dl></h4>')

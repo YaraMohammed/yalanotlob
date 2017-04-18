@@ -1,6 +1,9 @@
 {
   "name": "yalaNotlob",
   "version": "1.0.0",
+  "scripts":{
+	"start": "app.js"
+	},
   "description": "Food Delivery Ordering Social Network",
   "main": "app.js",
   "dependencies": {

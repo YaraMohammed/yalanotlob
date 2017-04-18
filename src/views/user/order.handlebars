@@ -1,48 +1,182 @@
-Owner: {{order.owner}}<br>
-Type: {{order.type}}<br>
-Restaurant: {{order.restaurant}}<br>
-Status: {{order.status}}<br>
-Menu Image: <img src="/uploads/{{order.menuImageUrl}}">
-<table>
-	<thead>
-		<tr>
-			<th>Person</th>
-			<th>Item</th>
-			<th>Amount</th>
-			<th>Price</th>
-			<th>Comment</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-	{{#each order.orders}}
-		<tr>
-			<td>{{owner}}</td>
-			<td>{{item}}</td>
-			<td>{{amount}}</td>
-			<td>{{price}}</td>
-			<td>{{comment}}</td>
-			<td><a href="/order/{{{@root.order._id}}}/{{_id}}/delete">Delete</a></td>
-		</tr>
-	{{/each}}
-	</tbody>
-</table>
-<form method="post">
-	<div>
-		<label>Item</label>
-		<input type="text" name="order-item">
+<!-- Add Item Label -->
+<div class="container">
+	<h2><p class="text-left"><span class="label label-default">Add Item</span></p></h2>
+</div>
+<!-- // Add Item Label -->
+
+<!-- Orders Details Container  -->
+<BR>
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="panel panel-primary-custom">
+			  <div class="panel-heading">
+				<h3 class="panel-title">Orders Details</h3>
+			  </div>
+
+				<div class="panel-body fixed-panel">
+					<!-- Orders Details Table -->
+					<div class="table-responsive">
+					  <table class="table table-bordered">
+						<thead>
+						  <tr>
+							<th>Friend Name</th>
+							<th>Item</th>
+							<th>Amount</th>
+							<th>Price</th>
+							<th>Comment</th>
+									<th>Action</th>
+						  </tr>
+						</thead>
+						<tbody>
+						{{#each order.orders}}
+							<tr>
+								<td>{{user.name}}</td>
+								<td>{{item}}</td>
+								<td>{{amount}}</td>
+								<td>{{price}}</td>
+								<td>{{comment}}</td>
+								<td><a href="/order/{{{@root.order._id}}}/{{_id}}/delete"><span style="color:#930808" class="glyphicon glyphicon-remove"></span></a></td>
+							</tr>
+						{{/each}}
+						</tbody>
+					  </table>
+					</div>
+					<!-- // Orders Details Table -->
+			  </div>
+			</div>
+		</div>
+
+		<!-- Orders Statistics Panel -->
+		<div class="col-md-4">
+			<div class="panel panel-primary-custom">
+			  <div class="panel-heading">
+				<h3 class="panel-title">Orders Statistics</h3>
+			  </div>
+				<div class="panel-body fixed-panel">
+
+					<!-- Invited Friends Label --><BR><BR><BR>
+						<h3>
+							<span class="label label-primary">{{invitedCnt}} Friends Invited</span>
+							<a data-toggle="modal" href="#invitedFriendsModal"><span style="color:#337ab7" class="glyphicon glyphicon-eye-open"></span></a>
+						</h3>
+								<!-- Modal -->
+								<div style="color: black" class="modal fade" id="invitedFriendsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								  <div class="modal-dialog" role="document">
+									<div class="modal-content">
+									  <div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h3 class="modal-title" id="myModalLabel">Invited Friends</h3>
+									  </div>
+									  <div class="modal-body">
+												<!-- Friends Container -->
+													<div class="row">
+														<!-- Friend Inside Modal -->
+														{{#each invited}}
+														<div class="col-md-4">
+														<div class="thumbnail">
+																<div class="caption">
+																	<a href="/user/{{_id}}"><h4>{{name}}</h4></a>
+																</div>
+														  <a href="/user/{{_id}}"><img src="/uploads/{{imageUrl}}"></a>
+														</div>
+													  </div>
+													  {{/each}}
+														<!-- //Friend Inside Modal -->
+													</div>
+												<!-- Friends Container -->
+									  </div>
+									  <div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									  </div>
+									</div>
+								  </div>
+								</div>
+					<!-- // Invited Friends Label --><BR>
+
+					<!-- Joined Friends Label -->
+						<h3>
+							<span class="label label-success">{{joinedCnt}} Friends Joined</span>
+							<a data-toggle="modal" href="#joinedFriendsModal"><span style="color:#5cb85c" class="glyphicon glyphicon-eye-open"></span></a>
+						</h3>
+								<!-- Modal -->
+								<div style="color: black" class="modal fade" id="joinedFriendsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								  <div class="modal-dialog" role="document">
+									<div class="modal-content">
+									  <div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h3 class="modal-title" id="myModalLabel">Joined Friends</h3>
+									  </div>
+									  <div class="modal-body">
+												<!-- Friends Container -->
+													<div class="row">
+														<!-- Friend Inside Modal -->
+														{{#each joined}}
+														<div class="col-md-4">
+														<div class="thumbnail">
+																<div class="caption">
+																	<a href="/user/{{_id}}"><h4>{{name}}</h4></a>
+																</div>
+														  <a href="/user/{{_id}}"><img src="/uploads/{{imageUrl}}"></a>
+														</div>
+													  </div>
+													  {{/each}}
+														<!-- //Friend Inside Modal -->
+													</div>
+												<!-- Friends Container -->
+									  </div>
+									  <div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									  </div>
+									</div>
+								  </div>
+								</div>
+					<!-- // Joined Friends Label --><BR>
+
+			  </div>
+			</div>
+		</div>
+		<!-- // Orders Statistics Panel -->
+</div>
+</div>
+<!-- // Orders Details Container -->
+
+<!-- Item Details -->
+<div class="container">
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-primary-custom">
+			<div class="panel-heading">
+				<h3 class="panel-title">Item Details</h3>
+			</div>
+			<div class="panel-body">
+					<form class="form-inline" method="post">
+						<h4>
+						<div class="form-group">
+							<label for="itemName">Item</label>
+								<input type="text" class="form-control" id="itemName" name="order-item" placeholder="Item Name" required="">
+						</div>
+						<div class="form-group">
+							<label for="amount">Amount</label>
+								<input type="number" class="form-control" id="amount" name="order-amount" required="">
+						</div>
+						<div class="form-group">
+							<label for="price">Price</label>
+								<input type="number" class="form-control" id="price" name="order-price" required="">
+						</div>
+						<div class="form-group">
+							<label for="comment">Comment</label>
+								<input type="text" class="form-control" id="comment" name="order-comment" placeholder="Without Salad" required="">
+						</div>
+						<div class="form-group">
+								<input type="submit" class="form-control btn btn-success" id="comment" value="Add">
+						</div>
+					</h4>
+			</div>
+		</div>
 	</div>
-	<div>
-		<label>Amount</label>
-		<input type="number" min="0" name="order-amount">
-	</div>
-	<div>
-		<label>Price</label>
-		<input type="number" min="0" step=".5" name="order-price">
-	</div>
-	<div>
-		<label>Comment</label>
-		<input type="text" name="order-comment">
-	</div>
-	<input type="submit" value="Add">
-</form>
+</div>
+</div>
+<!-- // Item Details -->
+
+<img src="/uploads/{{order.menuImageUrl}}">

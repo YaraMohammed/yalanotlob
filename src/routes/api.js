@@ -15,7 +15,7 @@ router.get('/get-users/:entity_id', cookieParser(), (req, res) => {
 			var email = user.userEmail(req.cookies.token);
 			if (email) {
 				user.get(email, (u) => {
-					if (u && u.groups.hasOwnProperty(req.params['entity_id'])) {
+					if (u && u.groups && u.groups.hasOwnProperty(req.params['entity_id'])) {
 						user.listFriends(u.groups[req.params['entity_id']], (err, u) => {
 							res.json(u);
 						});

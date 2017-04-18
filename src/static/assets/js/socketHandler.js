@@ -6,19 +6,33 @@ if(getCookie('token')){
 
 //listen to notification
 	socket.on('notification', function(data){
+		console.log(data);
 		if(data.type == 'orderJoinRequest' && data.senderName != undefined){
-			$('#notifications').prepend('<li id="'+data.orderID+'"><a href=/user/'+data.sender+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'/accept>Join</a></li>');
+			// $('#notifications').prepend('<li id="'+data.orderID+'"><a href=/user/'+data.sender+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'/accept>Join</a></li>');
+			$('#notifications-top').after('<li id="'+data.orderID+'"><a href="/order/'+data.orderID+'/accept">\
+				<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/'+data.senderImage+'">\
+				'+data.senderName+' has invited you to his/her order. Click to Join\
+			</a></li><li id="'+data.orderID+'-sep" role="separator" class="divider"></li>');
 			$('#badge').html(Number($('#badge').html())+1)
 		} else if (data.type == 'orderAccept') {
-			$('#notifications').prepend('<li id="'+data.orderID+'"><a href=/user/'+data.sender+'>'+data.senderName+' </a> has accepted invitation to <a href=/order/'+data.orderID+'>your order</a>.</li>');
+			// $('#notifications').prepend('<li id="'+data.orderID+'"><a href=/user/'+data.sender+'>'+data.senderName+' </a> has accepted invitation to <a href=/order/'+data.orderID+'>your order</a>.</li>');
+			$('#notifications-top').after('<li id="'+data.orderID+'"><a href="/order/'+data.orderID+'">\
+				<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/'+data.senderImage+'">\
+				'+data.senderName+' has invited you to his/her order. Joined\
+			</a></li><li id="'+data.orderID+'-sep" role="separator" class="divider"></li>');
 			$('#badge').html(Number($('#badge').html())+1)
 		} else if (data.type == 'notifyFinished') {
-			$('#'+data.orderID).html('<li id="'+data.orderID+'"><a href=/user/'+data.orderOwner+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'>Finished</a></li>')
+			// $('#'+data.orderID).html('<li id="'+data.orderID+'"><a href=/user/'+data.orderOwner+'>'+data.senderName+' </a> has invited you to his order. <a href=/order/'+data.orderID+'>Finished</a></li>')
+			$('#'+data.orderID).html('<a href="/order/'+data.orderID+'">\
+				<img class="img-circle" style="width: 50px; height: 50px" src="/uploads/'+data.senderImage+'">\
+				'+data.senderName+' has invited you to his/her order. Finished\
+			</a>');
 			if(location.pathname == '/orders'){
 				location.reload();
 			}
 		} else if (data.type == 'notifyCancelled'){
 			$('#'+data.orderID).remove();
+			$('#'+data.orderID+'-sep').remove();
 			if(location.pathname == '/orders'){
 				location.reload();
 			}

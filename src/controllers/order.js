@@ -58,12 +58,12 @@ module.exports = {
 					console.log(err);
 
 					// send notification
-					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name , 'orderID': data._id};
+					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name ,senderImage: user.imageUrl , 'orderID': data._id};
 					// console.log('Notification ',notification,' invited ',invited);
 					socket.sendJoinReq(notification, invited);
 
 					//update friends activity for user friends
-					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'senderName': user.name , 'orderType': type , 'restaurant': restaurant};
+					var notifyFriend = {'type': 'notifyFriend' , 'orderOwner': user._id , 'senderName': user.name ,senderImage: user.imageUrl , 'orderType': type , 'restaurant': restaurant};
 					socket.newFriendActivity(notifyFriend, notInvitedFriends);
 					cb(null, data._id);
 				});
@@ -153,7 +153,7 @@ module.exports = {
 				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
 					console.log(err);
 				});
-				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name , 'orderID': orderID};
+				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name, senderImage: user.imageUrl , 'orderID': orderID};
 				// console.log('Notification ',notification,' invited ',[order.owner]);
 				socket.sendOrderAccept(notification, [order.owner]);
 				var q = {};
@@ -287,7 +287,8 @@ module.exports = {
 				}
 				User.findOne({_id:userEmail},function(err,data){
 					if(data){
-						var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail, 'senderName':data.name};
+						var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail, 'senderName':data.name, 'senderImage': data.imageUrl};
+						console.log(notifyFinished);
 						socket.notifyFinishedOrder(notifyFinished , notified);
 					}
 				});

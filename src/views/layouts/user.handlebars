@@ -14,7 +14,7 @@
 	</head>
 	<body>
 		<script src="/assets/js/jquery-3.2.1.min.js"></script>
-		{{> user/nav}}
+		<!-- {{> user/nav}} -->
 		<div class="center-container">
 
 							<!-- Nav Bar -->
@@ -42,10 +42,10 @@
 											  </button>
 											  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="width: 500px">
 													<li style="padding: 3px 20px;">Notifications</li>
-													<li role="separator" class="divider"></li>
+													<li id="notifications-top" role="separator" class="divider"></li>
 													{{#each notifications}}
 													{{#ifEq type "req"}}
-													<li id='{{orderID}}'>
+													<li id="{{orderID}}">
 														{{#ifEq myStatus "waiting"}}
 														{{#ifEq status "waiting"}}
 														<a href="/order/{{orderID}}/accept">
@@ -73,7 +73,7 @@
 														</a>
 													</li>
 													{{/ifEq}}
-													<li role="separator" class="divider"></li>
+													<li id="{{orderID}}-sep" role="separator" class="divider"></li>
 													{{/each}}
 													<li><a href="/notifications">View All Notifications</a></li>
 												</ul>

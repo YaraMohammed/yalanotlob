@@ -1,34 +1,67 @@
-<h1>Orders</h1>
-<a href="/order-new">Start New Order</a>
-<table>
-	<thead>
-		<tr>
-			<th>Order</th>
-			<th>Restaurant</th>
-			<th>Invited</th>
-			<th>Joined</th>
-			<th>Status</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-	{{#each orders}}
-	<tr>
-		<td>{{type}}</td>
-		<td>{{restaurant}}</td>
-		<td>\{{invited}}</td>
-		<td>\{{joined}}</td>
-		<td>{{status}}</td>
-		<td>
-			<a href="/order/{{_id}}">View</a>
-			{{#ifEq status "waiting"}}
-			{{#ifEq owner @root.user._id}}
-			<a href="/order/{{_id}}/finish">Finish</a>
-			<a href="/order/{{_id}}/cancel">Cancel</a>
-			{{/ifEq}}
-			{{/ifEq}}
-		</td>
-	</tr>
-	{{/each}}
-	</tbody>
-</table>
+<!-- Orders Label -->
+<div class="container">
+	<h2><p class="text-left"><span class="label label-default">Orders</span></p></h2>
+</div>
+<!-- // Orders Label -->
+
+<!-- New Order Label -->
+<div class="container">
+	<h3 class="text-right"><a href="/order-new"><span class="label label-primary">New Order</span></a></h3>
+</div>
+<!-- // New Order Label -->
+
+<!-- Orders Details Container  -->
+<BR>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-primary-custom">
+
+			  <div class="panel-heading">
+				<h3 class="panel-title">Orders Details</h3>
+			  </div>
+
+				<div class="panel-body fixed-panel">
+					<!-- Orders Details Table -->
+					<div class="table-responsive">
+					  <table class="table table-bordered">
+						<thead>
+						  <tr>
+							<th>Order Type</th>
+							<th>Restaurant</th>
+							<th>Invited</th>
+							<th>Joined</th>
+							<th>Status</th>
+									<th>Actions</th>
+						  </tr>
+						</thead>
+						<tbody>
+							{{#each orders}}
+							<tr>
+								<td>{{type}}</td>
+								<td>{{restaurant}}</td>
+								<td>{{invited}}</td>
+								<td>{{joined}}</td>
+								<td>{{status}}</td>
+								<td>
+									<a href="/order/{{_id}}"><span style="color:#06547a;margin-right: 15px" class="glyphicon glyphicon-eye-open"></a></span></a>
+									{{#ifEq status "waiting"}}
+									{{#ifEq owner @root.user._id}}
+									<a href="/order/{{_id}}/finish"><span style="color:#08510d;margin-right: 15px" class="glyphicon glyphicon-ok"></span></a>
+									<a href="/order/{{_id}}/cancel"><span style="color:#930808" class="glyphicon glyphicon-remove"></span></a>
+									{{/ifEq}}
+									{{/ifEq}}
+								</td>
+							</tr>
+							{{/each}}
+						</tbody>
+					  </table>
+					</div>
+					<!-- // Orders Details Table -->
+			  </div>
+
+			</div>
+		</div>
+</div>
+</div>
+<!-- // Orders Details Container -->

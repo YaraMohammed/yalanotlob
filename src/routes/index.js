@@ -284,6 +284,19 @@ router.get('/group/:groupID/:friendID/remove', (req, res) => {
 
 router.get('/orders', (req, res) => {
 	order.listOrders(res.locals.user._id, res.locals.user.orders, (err, data) => {
+		for (var i in data) {
+			var invited = 0;
+			var joined = 0;
+			console.log(data[i].requests);
+			for (var usr in data[i].requests) {
+				invited++;
+				if (data[i].requests[usr] == 'accepted') {
+					joined++;
+				}
+			}
+			data[i].invited = invited;
+			data[i].joined = joined;
+		}
 		res.render('user/orders', {orders: data});
 	});
 });
@@ -298,7 +311,68 @@ get((req, res) => {
 			)
 		) {
 			if (order.status == 'waiting') {
-				res.render('user/order', {order: order});
+				var userIds = [order.owner];
+				for (var userId of Object.keys(order.requests)) {
+					userId = new Buffer(userId, 'base64').toString();
+					userIds.push(userId);
+				}
+				user.listFriends(userIds, (err, users) => {
+					var userObjs = {};
+					for (var i = 0; i < users.length; i++) {
+						userObjs[users[i]._id] = users[i];
+					}
+					var invited = [];
+					var invitedCnt = 0;
+					var joined = [];
+					var joinedCnt = 0;
+
+					for (var buId in order.requests) {
+						var uId = new Buffer(buId, 'base64').toString();
+						invited.push(userObjs[uId]);
+						invitedCnt++;
+						if (order.requests[buId] == 'accepted') {
+							joined.push(userObjs[uId]);
+							joinedCnt++;
+						}
+					}
+					for (var k = 0; k < order.orders.length; k++) {
+						order.orders[k].user = userObjs[order.orders[k].owner];
+					}
+					res.render('user/order', {
+						order: order,
+						invited: invited,
+						invitedCnt: invitedCnt,
+						joined: joined,
+						joinedCnt: joinedCnt
+					});
+				});
+				// var invited = 0;
+				// var joined = 0;
+				// var invitedUsrs = [];
+				// var joinedUsrs = [];
+				// console.log(order.requests);
+				// for (var usr in order.requests) {
+				// 	invited++;
+				// 	if (order.requests[usr] == 'accepted') {
+				// 		joined++;
+				// 	}
+				// }
+				// order.invited = invited;
+				// order.joined = joined;
+				// var invitedList = [];
+				// for (var i = 0; i < order.requests.length; i++) {
+				// 	invitedList.push(order.requests[i].owner);
+				// }
+				// var userNames = {};
+				// user.listFriends(invitedList, (err, users) => {
+				// 	for (var j in users) {
+				// 		userNames[users[j]._id] = users[j].name;
+				// 	}
+				// 	for (var k in order.orders) {
+				// 		order.orders[k].name = userNames[order.orders[k].owner];
+				// 	}
+				// 	res.render('user/order', {order: order});
+				// });
 			} else {
 				var orders = {};
 				for (var o of order.orders) {

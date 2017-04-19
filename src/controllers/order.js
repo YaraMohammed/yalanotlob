@@ -12,7 +12,6 @@ module.exports = {
 			cb('Insufficient data given');
 			return;
 		}
-		console.log('friends ',friends);
 		var reqs = {};
 		var invited = [];
 		var notInvitedFriends = user.friends;
@@ -52,13 +51,11 @@ module.exports = {
 					{
 						var id = data._id;
 						var uid = new Buffer(key, 'base64').toString('ascii');
-						User.findOneAndUpdate({'_id': uid},{$addToSet: {'orderRequests': id}}, function(err) {
-							console.log(err);
+						User.findOneAndUpdate({'_id': uid},{$addToSet: {'orderRequests': id}}, function() {
 						});
 					}
 				}
-				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function (err) {
-					console.log(err);
+				User.findOneAndUpdate({'_id': user._id},{$addToSet: {'orders': data._id}},function () {
 
 					// send notification
 					var notification = {'type': 'orderJoinRequest' , 'sender': user._id , 'senderName': user.name ,senderImage: user.imageUrl , 'orderID': data._id};
@@ -73,7 +70,6 @@ module.exports = {
 			}
 			else
 			{
-				console.log(err);
 				cb(err);
 			}
 
@@ -141,7 +137,7 @@ module.exports = {
 			var userEmail = new Buffer(user._id).toString('base64');
 			if (order.requests[userEmail] == undefined)
 			{
-				throw 'Error';
+				return;
 			}
 			else
 			{
@@ -149,12 +145,10 @@ module.exports = {
 				var oReq = {};
 				oReq[criteria] = 'accepted';
 				// console.log(oReq);
-				Order.update({'_id': orderID},{$set:oReq}, (err) => {
-					console.log(err);
+				Order.update({'_id': orderID},{$set:oReq}, () => {
 				});
 				userEmail = new Buffer(userEmail, 'base64').toString('ascii');
-				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function(err) {
-					console.log(err);
+				User.findOneAndUpdate({'orderRequests': orderID , '_id': userEmail},{$addToSet:{'orders':orderID}}, function() {
 				});
 				var notification = {'type': 'orderAccept' , 'sender': user._id , 'senderName': user.name, senderImage: user.imageUrl , 'orderID': orderID};
 				// console.log('Notification ',notification,' invited ',[order.owner]);
@@ -164,8 +158,7 @@ module.exports = {
 					user: userEmail,
 					time: new Date()
 				};
-				User.findOneAndUpdate({'_id': order.owner}, {$push: q}, (err) => {
-					console.log(err);
+				User.findOneAndUpdate({'_id': order.owner}, {$push: q}, () => {
 				});
 			}
 		}
@@ -187,7 +180,6 @@ module.exports = {
 			comment: comment
 		};
 		Order.findOne({'_id': orderID},function (err, data) {
-			console.log(data);
 			if (err || !data || data.status != 'waiting') {
 				cb(err, data);
 				return;
@@ -197,12 +189,7 @@ module.exports = {
 				{
 					if(!err)
 					{
-						console.log(data);
 						cb(err, data);
-					}
-					else
-					{
-						console.error(err);
 					}
 				});
 			}
@@ -216,12 +203,7 @@ module.exports = {
 						{
 							if(!err)
 							{
-								console.log(data);
 								cb(err, data);
-							}
-							else
-							{
-								console.error(err);
 							}
 						});
 
@@ -254,7 +236,6 @@ module.exports = {
 				if(item && item.owner == userEmail)
 				{
 					Order.update({'_id': orderID},{$pull: {'orders':{'_id': itemID}}},function (err,data) {
-						console.log(err);
 						cb(null,data);
 
 					});
@@ -291,7 +272,6 @@ module.exports = {
 				User.findOne({_id:userEmail},function(err,data){
 					if(data){
 						var notifyFinished = {'type': 'notifyFinished', 'orderID': orderID, 'orderOwner': userEmail, 'senderName':data.name, 'senderImage': data.imageUrl};
-						console.log(notifyFinished);
 						socket.notifyFinishedOrder(notifyFinished , notified);
 					}
 				});
@@ -321,8 +301,7 @@ module.exports = {
 				{
 					for(var i = 0 ; i< Object.keys(data.requests).length ; i++)
 					{
-						User.update({'orderRequests': orderID}, {$pull: {'orderRequests': orderID, 'orders': orderID}}, function (err) {
-							console.log(err);
+						User.update({'orderRequests': orderID}, {$pull: {'orderRequests': orderID, 'orders': orderID}}, function () {
 						});
 					}
 				}
@@ -333,22 +312,15 @@ module.exports = {
 						var notifyCancelled = {'type': 'notifyCancelled', 'orderID': orderID, 'orderOwner': userEmail};
 						socket.notifyCancelledOrder(notifyCancelled , notified);
 						// console.log(data);
-					} else {
-						console.log(err);
 					}
 				});
 				var q = {};
 				q['orderAccepts.'+orderID] = [];
-				User.findOneAndUpdate({'_id': data.owner}, {$unset: q}, function (err) {
-					console.log(err);
+				User.findOneAndUpdate({'_id': data.owner}, {$unset: q}, function () {
 				});
 			}
-			else {
-				console.log('error',err);
-			}
 		});
-		User.findOneAndUpdate({'orders': orderID}, {$pull: {'orders': orderID}}, function (err) {
-			console.log(err);
+		User.findOneAndUpdate({'orders': orderID}, {$pull: {'orders': orderID}}, function () {
 		});
 	},
 

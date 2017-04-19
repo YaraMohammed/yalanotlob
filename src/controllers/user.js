@@ -23,26 +23,22 @@ module.exports = {
 			userModel.findOne({'_id': userEmail}, function (err, data) {
 				if(!data)
 				{
-					newUser.save(function(err,data){
+					newUser.save(function(err){
 						if(!err){
-							console.log(data);
 							cb(null);
 						} else {
-							console.log(err);
 							cb(err);
 						}
 					});
 				}
 				else
 				{
-					console.log('User Already Exist');
 					cb('User Already Exist');
 				}
 
 			});
 		}else
 		{
-			console.log('you entered wrong data');
 			cb('you entered wrong data');
 		}
 
@@ -88,7 +84,6 @@ module.exports = {
 
 	//Change Password
 	changePassword: function (userEmail, oldPass, newPass, confPass, cb) {
-		console.log('ay 7aga');
 		userModel.findOne({'_id': userEmail}, function (err, data) {
 			if(data && newPass == confPass && data.password == oldPass)
 			{
@@ -110,9 +105,7 @@ module.exports = {
 					length: 6,
 					numbers: true
 				});
-				console.log('pass',password);
-				userModel.update({'_id': data._id}, {$set: {'password': password}}, function (err) {
-					console.log(err);
+				userModel.update({'_id': data._id}, {$set: {'password': password}}, function () {
 				});
 				sendmail({
 					from: ' yalaNotlob <noreply@yalaNotlob.com>',
@@ -120,21 +113,14 @@ module.exports = {
 					subject: 'Reset password',
 					html: 'Your new password is '+password+'<br>'+
 					'<a href="http://'+config.app.host+':'+config.app.port+'/change-pass">Change Password</a>',
-				}, function(err, reply) {
-					console.log(err && err.stack);
-					console.dir(reply);
+				}, function() {
 				});
-			}
-			else
-			{
-				console.log(err);
 			}
 		});
 	},
 
 	//Change imageUrl
 	changeImage: function (userEmail,imageUrl, cb) {
-		console.log('ay habl');
 		userModel.findOne({'_id': userEmail}, function (err, data) {
 			if(data)
 			{
@@ -178,9 +164,8 @@ module.exports = {
 
 	// remove friend
 	removeFriend: function(user, friendEmail) {
-		userModel.findOneAndUpdate({ _id: user._id }, { $pull: { friends: friendEmail } }, function(err, data) {
-			if (err) throw err;
-			console.log(data);
+		userModel.findOneAndUpdate({ _id: user._id }, { $pull: { friends: friendEmail } }, function(err) {
+			if (err) {return;}
 		});
 		for (var group in user.groups) {
 			this.removeFromGroup(user._id, group, friendEmail, () => {});
@@ -200,17 +185,12 @@ module.exports = {
 			userModel.findOne(q, function(err, data) {
 				if (data == null){
 					//  add friend in user friends list
-					userModel.update({_id: userEmail},{$set:group}, function(err, data) {
-						if (err) throw err;
-						console.log(data);
+					userModel.update({_id: userEmail},{$set:group}, function(err) {
+						if (err) {return;}
 					});
-				}else{
-					console.log('Group Already Exists');
 				}
 			});
 		}
-		else
-			console.log('invalid name');
 	},
 
 	// delete a group
@@ -218,19 +198,14 @@ module.exports = {
 		var groupCriteria =  'groups.'+groupName;
 		var q = {_id: userEmail};
 		q[groupCriteria] = {$exists: true};
-		console.log(q);
 		userModel.findOne(q, function(err, data) {
 			if (data != null){
 				//  add friend in user friends list
 				var q = {};
 				q['groups.'+groupName] = [];
-				console.log(q);
-				userModel.update({_id: userEmail},{$unset: q}, function(err, data) {
-					if (err) throw err;
-					console.log(data);
+				userModel.update({_id: userEmail},{$unset: q}, function(err) {
+					if (err) {return;}
 				});
-			}else{
-				console.log(err);
 			}
 		});
 	},
@@ -238,7 +213,6 @@ module.exports = {
 	// add new member to group
 	addToGroup: function(user, groupName, friendEmail, cb) {
 		if (user.friends.indexOf(friendEmail) == -1 || friendEmail == user._id) {
-			console.log('WRONG');
 			cb('Cannot add user to group');
 			return;
 		}

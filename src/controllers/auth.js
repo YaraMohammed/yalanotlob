@@ -51,7 +51,7 @@ function logUser(profile, done){
 
 				if (!err)
 					var token = jwt.sign({ '_id': newUser._id }, 'secret', { algorithm: 'HS256'});
-					return done(null,token);
+				return done(null,token);
 			});
 		}
 	});

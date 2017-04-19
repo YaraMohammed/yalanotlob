@@ -82,7 +82,7 @@
 				url: '/api/get-users/'+invited,
 				success: function(data) {
 					for (var u of data) {
-						if (invitedList.indexOf(u._id) == -1) {
+						if (u._id != '{{user._id}}' && invitedList.indexOf(u._id) == -1) {
 							invitedList.push(u._id);
 							$('#friendsList').append(
 								'<div class="col-md-3">\

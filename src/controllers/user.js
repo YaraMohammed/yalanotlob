@@ -87,14 +87,16 @@ module.exports = {
 	},
 
 	//Change Password
-	changePassword: function (userEmail, oldPass, newPass, confPass) {
+	changePassword: function (userEmail, oldPass, newPass, confPass, cb) {
 		console.log('ay 7aga');
 		userModel.findOne({'_id': userEmail}, function (err, data) {
 			if(data && newPass == confPass && data.password == oldPass)
 			{
 				userModel.update({'_id': data._id}, {$set: {'password': newPass}}, function (err) {
-					console.log(err);
+					cb(err);
 				});
+			} else {
+				cb('Wrong Data');
 			}
 		});
 	},
@@ -126,6 +128,21 @@ module.exports = {
 			else
 			{
 				console.log(err);
+			}
+		});
+	},
+
+	//Change imageUrl
+	changeImage: function (userEmail,imageUrl, cb) {
+		console.log('ay habl');
+		userModel.findOne({'_id': userEmail}, function (err, data) {
+			if(data)
+			{
+				userModel.update({'_id': data._id}, {$set: {'imageUrl': imageUrl}}, function (err) {
+					cb(err);
+				});
+			} else {
+				cb('Wrong Data');
 			}
 		});
 	},
@@ -172,7 +189,7 @@ module.exports = {
 
 	// create new group
 	createGroup: function(userEmail, groupName) {
-		if(groupName.indexOf('/') == -1){
+		if(groupName.indexOf('/') == -1 && groupName.indexOf('\\') == -1){
 			var groupCriteria =  'groups.'+groupName;
 			var q = {_id: userEmail};
 			q[groupCriteria] = {$exists: true};

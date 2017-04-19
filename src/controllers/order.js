@@ -8,7 +8,7 @@ module.exports = {
 	// create new order functions
 	create: function(user, type, restaurant, friends, menuImageUrl, cb)
 	{
-		if (!type || !restaurant || !friends) {
+		if (!type || !restaurant || !friends || !friends.length || !menuImageUrl) {
 			cb('Insufficient data given');
 			return;
 		}
@@ -26,7 +26,10 @@ module.exports = {
 				reqs[Buffer(friend).toString('base64')] = 'waiting';
 			}
 		}
-		// console.log('Reqs', reqs);
+		if (!invited || !invited.length) {
+			cb('Insufficient data given');
+			return;
+		}
 		var order = new Order(
 			{
 				owner: user._id,

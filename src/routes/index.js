@@ -103,7 +103,7 @@ router.post('/login', (req, res) => {
 			res.redirect('/');
 		} else {
 			console.log('Authentication failed for '+req.body['user-email']);
-			res.redirect('/login');
+			res.redirect('/?err=data');
 		}
 	});
 });
@@ -162,11 +162,11 @@ post(upload.single('user-img'), (req, res) => {
 		function (err) {
 			if(!err)
 			{
-				res.redirect('/login');
+				res.redirect('/');
 			}
 			else
 			{
-				res.redirect('/register');
+				res.redirect('/register?err=data');
 			}
 		}
 	);
@@ -178,7 +178,7 @@ get((req, res) => {
 }).
 post((req, res) => {
 	user.forgotPassword(req.body['user-email']);
-	res.redirect('/login');
+	res.redirect('/');
 });
 
 router.route('/change-pass').
@@ -191,9 +191,32 @@ post((req, res) => {
 		req.body['user-email'],
 		req.body['user-pass-old'],
 		req.body['user-pass'],
-		req.body['user-pass-conf']
+		req.body['user-pass-conf'],
+		(err) => {
+			if (!err) {
+				res.redirect('/');
+			} else {
+				res.redirect('/change-pass?err=data');
+			}
+		}
 	);
-	res.redirect('/login');
+});
+
+router.route('/change-img').
+get((req, res) => {
+	res.render('user/change-img');
+}).
+post(upload.single('user-img'), (req, res) => {
+	if (!req.file) req.file = {filename: ''};
+	user.changeImage(
+		res.locals.user,
+		req.file.filename,
+		(err) => {
+			if (!err) {
+				res.redirect('/profile');
+			}
+		}
+	);
 });
 
 router.get('/profile', (req, res) => {

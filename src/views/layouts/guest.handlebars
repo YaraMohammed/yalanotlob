@@ -20,6 +20,7 @@
 	<link rel="stylesheet" href="/assets/css/font-awesome.css">
 	<!-- web-fonts -->
 	<!-- <link href="//fonts.googleapis.com/css?family=Philosopher:400,400i,700,700i&amp;subset=cyrillic,cyrillic-ext,vietnamese" rel="stylesheet"> -->
+	<script src="/assets/js/app.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -30,9 +31,31 @@
 				<h1>Welcome to Yala Notlob</h1>
 			</div>
 			<!--//header-->
+			<div id="err-msg" style="color: white; background-color: #e66; padding: 7px; visibility: hidden">
+				Wrong Data Entered
+			</div>
+			<script type="text/javascript">
+			if (getParameterByName('err')) {
+				document.getElementById('err-msg').style.visibility = "visible";
+			}
+			</script>
 			<!--main-->
 			{{{body}}}
 			<!--//main-->
+			<script type="text/javascript">
+				document.getElementById('submitter').addEventListener('submit', function(e) {
+					var pass = document.getElementsByName('user-pass');
+					var passConf = document.getElementsByName('user-pass-conf');
+					if (pass && passConf) {
+						if (pass[0].value != passConf[0].value) {
+							e.preventDefault();
+							var errMsg = document.getElementById('err-msg');
+							errMsg.innerHTML = "Passwords do not match"
+							errMsg.style.visibility = "visible";
+						}
+					}
+				});
+			</script>
 			<!--footer-->
 			<div class="footer">
 				<p>&copy; 2017 ITI INTAKE 37. All rights reserved | Design by <a href="https://www.facebook.com/groups/190513138041329/" target="_blank">Open Srouce Department</a></p>

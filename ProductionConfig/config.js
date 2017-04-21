@@ -4,7 +4,7 @@ module.exports = {
 		'port': 8888
 	},
 	'database': {
-		'hostname': 'mongo',
+		'hostname': 'db',
 		'port': 27017 ,
 		'name': 'yalaNotlob'
 	},

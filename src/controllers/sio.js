@@ -43,8 +43,6 @@ module.exports = {
 	},
 
 	sendJoinReq: function(notification,invited){
-		console.log('sendJoinReq')
-		console.log('invited ',invited)
 		this.send(notification, invited);
 	},
 
@@ -63,7 +61,7 @@ module.exports = {
 	},
 
 	newFriendActivity: function(notification , notInvitedFriends){
-		this.send(notification, notInvitedFriends)
+		this.send(notification, notInvitedFriends);
 	},
 
 	listConnections: function(){

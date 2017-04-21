@@ -8,16 +8,6 @@ var order = require('../controllers/order');
 var cookieParser = require('cookie-parser');
 var upload = require('multer')({ dest: 'uploads/' });
 
-/*//////////////// Try Socket
-var data = {'type':'orderJoinRequest','sender':'Yara'}
-var invited = [ 'eng.yara4@gmail.com', 'yara.mohamed174@yahoo.com' ]
-socket.sendJoinReq(data,invited)
-socket.sendNotification(data)
-
-var data = {'_id':'sender','orderFor':'Breakfast','resturant':'Rosto'}
-socket.newFriendActivity(data)
-///////////////*/
-
 /* VARs */
 var router = express.Router();
 
@@ -77,12 +67,10 @@ router.get('/', (req, res) => {
 		order.latestOrders(res.locals.user._id, res.locals.user.orders, (orders) => {
 			for (var i = 0; i < orders.length; i++) {
 				orders[i].cAt = orders[i].createdAt.toDateString();
-				console.log(orders[i].createdAt);
 			}
 			res.locals.orders = orders;
 			order.friendsActivity(res.locals.user.friends, (err, data) => {
 				res.locals.friendsActivity = data;
-				console.log(data);
 				res.render('user/index');
 			});
 		});
@@ -102,7 +90,6 @@ router.post('/login', (req, res) => {
 			res.cookie('token', token);
 			res.redirect('/');
 		} else {
-			console.log('Authentication failed for '+req.body['user-email']);
 			res.redirect('/?err=data');
 		}
 	});
@@ -151,7 +138,6 @@ get((req, res) => {
 	}
 }).
 post(upload.single('user-img'), (req, res) => {
-	console.log(req.body, req.file);
 	if (!req.file) req.file = {filename: ''};
 	user.register(
 		req.body['user-name'],
@@ -251,7 +237,6 @@ get((req, res) =>{
 }).
 
 post((req,res) =>{
-	console.log(req.body);
 	user.addFriend(
 		res.locals.user._id,
 		req.body['add-friend'],
@@ -289,7 +274,6 @@ post((req, res) => {
 			res.locals.user._id,
 			req.body['add-group']
 		);
-		// TODO callback function
 		res.redirect('/groups');
 	} else if(req.body['group-add-friend-submit']) {
 		user.addToGroup(res.locals.user, req.params.groupID, req.body['group-add-friend'], function() {
@@ -314,7 +298,6 @@ router.get('/orders', (req, res) => {
 		for (var i in data) {
 			var invited = 0;
 			var joined = 0;
-			console.log(data[i].requests);
 			for (var usr in data[i].requests) {
 				invited++;
 				if (data[i].requests[usr] == 'accepted') {
@@ -375,7 +358,9 @@ get((req, res) => {
 				});
 			} else {
 				var orders = {};
+				var totalPrice = 0;
 				for (var o of order.orders) {
+					totalPrice += o.price;
 					if (orders[o.item]) {
 						orders[o.item].amount += o.amount;
 						orders[o.item].price += o.price;
@@ -399,8 +384,7 @@ get((req, res) => {
 				for (var i in orders) {
 					oNew.push(orders[i]);
 				}
-				console.log(oNew);
-				res.render('user/order-sum', {orders: oNew});
+				res.render('user/order-sum', {orders: oNew, totalPrice: totalPrice});
 			}
 		} else {
 			res.redirect('/orders');
@@ -408,7 +392,6 @@ get((req, res) => {
 	});
 }).
 post((req, res) => {
-	console.log(req.body);
 	order.addItem(
 		res.locals.user._id,
 		req.params.orderID,
@@ -418,9 +401,7 @@ post((req, res) => {
 		req.body['order-comment'],
 		() => {
 			// TODO handle error
-			order.get(res.locals.user._id, req.params.orderID, (order) => {
-				res.render('user/order', {order: order});
-			});
+			res.redirect('/order/'+req.params.orderID);
 		}
 	);
 });
@@ -441,7 +422,6 @@ get((req, res) => {
 	res.render('user/order-new');
 }).
 post(upload.single('order-menu-img'), (req, res) => {
-	console.log(req.body);
 	if (!req.file) req.file = {filename: ''};
 	order.create(
 		res.locals.user,

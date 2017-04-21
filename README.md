@@ -6,3 +6,7 @@
 * Mariem Osama
 * Mohamed Khalil
 * Yara Mohammed
+
+
+## Server Installation in Docker 
+`docker-compose up -d` 

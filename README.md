@@ -9,4 +9,4 @@
 
 
 ## Server Installation in Docker 
-* docker-compose up 
+`docker-compose up` 

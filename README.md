@@ -12,4 +12,4 @@
 `docker-compose up -d` 
 
 ## URL
-(https://yla-ntlb.herokuapp.com/)
+https://yla-ntlb.herokuapp.com/

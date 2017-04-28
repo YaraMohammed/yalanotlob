@@ -11,4 +11,4 @@ COPY ProductionConfig/clientConfig.js /usr/app/src/static/assets/js/clientConfig
 RUN npm install
 
 CMD ["node", "app.js"]
-EXPOSE 8888:8888
+EXPOSE 8888
